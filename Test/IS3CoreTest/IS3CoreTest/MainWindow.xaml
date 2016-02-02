@@ -1,0 +1,9 @@
+﻿<Window x:Class="IS3CoreTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:is3python="clr-namespace:IS3.Python;assembly=IS3.Python"
+        Title="MainWindow" Height="500" Width="800">
+    <Grid>
+        <is3python:IronPythonControl x:Name="ipcHost"/>
+    </Grid>
+</Window>

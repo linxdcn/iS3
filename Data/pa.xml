@@ -1,0 +1,51 @@
+﻿<Project>
+  <is3:ProjectDefinition xmlns="http://schemas.microsoft.com/client/2007"
+                         xmlns:is3="clr-namespace:IS3.Core;assembly=IS3.Core"
+                         GeometryServiceUrl="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
+                         ID="IS3" ProjectTitle="iS3" DefaultMapID="BaseMap"
+                         LocalFilePath="C:\Win8 File\百度云同步盘\mac同步\IS3(newest)\Data\SZ_Pingan"
+                         LocalDatabaseName="SZ_Pingan.mdb">
+    <!--<is3:ProjectDefinition.EngineeringMaps>
+      <is3:EngineeringMap MapID="BaseMap"
+                    MinimumResolution="0.1"
+                    MapType="FootPrintMap"
+                    XMin="12696330" YMin="2575360"
+                    XMax="12696940" YMax="2576090">
+      </is3:EngineeringMap>
+    </is3:ProjectDefinition.EngineeringMaps>-->
+  </is3:ProjectDefinition>
+  
+  <Domain Name="Monitoring" Type="Monitoring">
+    <ObjsDefinition>
+      <MonPoint HasGeometry="true" Name="HorDis_RetainingPile"
+                GISLayerName="HorDis_RetainingPile"
+                TableNameSQL="HorDis_RetainingPile,HorDis_RetainingPileData"
+                OrderSQL="[Name],[time]"/>
+      <MonPoint HasGeometry="true" Name="Settl_Ground"
+                GISLayerName="Settl_Ground"
+                TableNameSQL="Settl_Ground,Settl_GroundData"
+                OrderSQL="[Name],[time]"/>
+      <MonGroup HasGeometry="true" Name="Settl_GroundGroup"
+                GISLayerName="Settl_GroundGroup"
+                TableNameSQL="Settl_GroundGroup"
+                OrderSQL="[Name],[time]"/>
+    </ObjsDefinition>
+    <TreeDefinition>
+      <Root>
+        <Monitoring DisplayName="基坑监测">
+          <MonPoint DisplayName="桩顶水平位移"
+                    RefDomainName="Monitoring"
+                    RefObjsName="HorDis_RetainingPile"/>
+          <MonPoint DisplayName="地表沉降点"
+                    RefDomainName="Monitoring"
+                    RefObjsName="Settl_Ground"/>
+          <MonGroup DisplayName="地表沉降组"
+                    RefDomainName="Monitoring"
+                    RefObjsName="Settl_GroundGroup"/>
+        </Monitoring>
+      </Root>
+    </TreeDefinition>
+  </Domain>
+
+
+</Project>

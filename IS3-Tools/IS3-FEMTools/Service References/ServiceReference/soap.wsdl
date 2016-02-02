@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:soap" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns="http://schemas.xmlsoap.org/wsdl/" name="soap" targetNamespace="urn:soap" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types xmlns="http://schemas.xmlsoap.org/wsdl/" />
+  <wsdl:message name="sayHelloRequest">
+    <wsdl:part name="content" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="sayHelloResponse">
+    <wsdl:part name="sayHello" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="addRequest">
+    <wsdl:part name="a" type="xsd:string" />
+    <wsdl:part name="b" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="addResponse">
+    <wsdl:part name="add" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:portType name="soapPort">
+    <wsdl:operation name="sayHello">
+      <wsdl:input message="tns:sayHelloRequest" />
+      <wsdl:output message="tns:sayHelloResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="add">
+      <wsdl:input message="tns:addRequest" />
+      <wsdl:output message="tns:addResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="soapBinding" type="tns:soapPort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <wsdl:operation name="sayHello">
+      <soap:operation soapAction="urn:soap#Service#sayHello" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:soap" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:soap" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="add">
+      <soap:operation soapAction="urn:soap#Service#add" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:soap" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:soap" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="soap">
+    <documentation />
+    <wsdl:port name="soapPort" binding="tns:soapBinding">
+      <soap:address location="http://10.10.127.87/soap/Service.php" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

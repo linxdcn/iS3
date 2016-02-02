@@ -1,6 +1,10 @@
+
 bin/
+
 obj/
+
 *.suo
+
 /Data/*
 !/Data/*.xml
 /Unity

@@ -1,0 +1,195 @@
+﻿<pm:ProjectDefinition xmlns="http://schemas.microsoft.com/client/2007"
+                      xmlns:pm="clr-namespace:IS3.Core.Project;assembly=IS3.Core"
+                      xmlns:emap="clr-namespace:IS3.Core.EMap;assembly=IS3.Core"
+                      xmlns:mon="clr-namespace:IS3.Core.Monitoring;assembly=IS3.Core"
+                      xmlns:num="clr-namespace:IS3.Core.Numerics;assembly=IS3.Core"
+                      ID="Pingan"
+                      ProjectTitle="ShenZhen Pingan Deep Excavation Project"
+                      DataServiceUrl="http://localhost:2872/WebServices/DataService.asmx"
+                      GeometryServiceUrl="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
+                      DefaultMapID="PinganBaseMap">
+    <pm:ProjectDefinition.SubProjectInfos>
+        <pm:DeepExcavationProjectInformation ID="SubProject1" ProjectType="DeepExcavation" ExcavationDepth="31" />
+    </pm:ProjectDefinition.SubProjectInfos>
+    <pm:ProjectDefinition.EngineeringMaps>
+        <emap:EngineeringMap MapID="PinganBaseMap" SubProjectID="SubProject1"
+                            MapUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer"
+                            MinimumResolution="0.1"
+                            MapType="FootPrintMap"
+                             XMin="12695733" YMin="2575837"
+                             XMax="12696419" YMax="2576227">
+          <emap:EngineeringMap.Backgrounds>
+            <emap:BackgroundsDef>
+              <emap:BackgroundsDef.BaseLayers>
+                <emap:GISLayer Name="RetainingPiles" />
+                <emap:GISLayer Name="Strut_Faces" />
+                <emap:GISLayer Name="Strut_Plates" />
+                <emap:GISLayer Name="Pipelines_lines" />
+                <emap:GISLayer Name="PlanarMap_Lines" />
+                <emap:GISLayer Name="Surroundings_Lines" />
+                <emap:GISLayer Name="Surroundings_Faces" />
+              </emap:BackgroundsDef.BaseLayers>
+            </emap:BackgroundsDef>
+          </emap:EngineeringMap.Backgrounds>
+          <emap:EngineeringMap.Monitorings>
+                <mon:MonitoringsDef InterestedMonitoringValue="Total">
+                    <mon:MonitoringsDef.MonitoringLayers>
+                        <mon:MonitoringLayer Name="HorDis_RetainingPile" Unit="mm" SymbolStyle="Circle"
+                                            PresentationMethod="Vector2D" PresentationScale="1.0"
+                                            Visible="True"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/1"/>
+                        <mon:MonitoringLayer Name="Settl_Ground" Unit="m" SymbolStyle="Rectangle"
+                                            PresentationMethod="VerticalBar" PresentationScale="1000"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/2"/>
+                        <mon:MonitoringLayer Name="Settl_SubwayDoor" Unit="m" SymbolStyle="Triangle"
+                                            PresentationMethod="VerticalBar" PresentationScale="1000"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/3">
+                            <mon:MonitoringLayer.WarningGroups>
+                                <mon:MonitoringWarningGroup CategoryName="Total">
+                                    <mon:MonitoringWarningGroup.WarningLevelValues>
+                                        <mon:MonitoringWarningLevelValue MinValue="-100." MaxValue="-0.02" 
+                                                                        WarningLevelIndex="3"/>
+                                        <mon:MonitoringWarningLevelValue MinValue="-0.02" MaxValue="-0.01"
+                                                                        WarningLevelIndex="2"/>
+                                        <mon:MonitoringWarningLevelValue MinValue="-0.01" MaxValue="0.01"
+                                                                        WarningLevelIndex="1"/>
+                                        <mon:MonitoringWarningLevelValue MinValue="0.01" MaxValue="0.02" 
+                                                                        WarningLevelIndex="2"/>
+                                        <mon:MonitoringWarningLevelValue MinValue="0.02" MaxValue="100"
+                                                                        WarningLevelIndex="3"/>
+                                    </mon:MonitoringWarningGroup.WarningLevelValues>
+                                </mon:MonitoringWarningGroup>
+                            </mon:MonitoringLayer.WarningGroups>
+                        </mon:MonitoringLayer>
+                        <mon:MonitoringLayer Name="HorDis_1stCircularStrut" Unit="m" SymbolStyle="Rectangle"
+                                            PresentationMethod="Vector2D" PresentationScale="1000"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/4"/>
+                        <mon:MonitoringLayer Name="HorDis_2ndCircularStrut" Unit="m" SymbolStyle="Rectangle"
+                                            PresentationMethod="Vector2D" PresentationScale="1000"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/5"/>
+                        <mon:MonitoringLayer Name="HorDis_3rdCircularStrut" Unit="m" SymbolStyle="Rectangle"
+                                            PresentationMethod="Vector2D" PresentationScale="1000"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/6"/>
+                        <mon:MonitoringLayer Name="HorDis_4thCircularStrut" Unit="m" SymbolStyle="Rectangle"
+                                            PresentationMethod="Vector2D" PresentationScale="1000"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/7"/>
+                        <mon:MonitoringLayer Name="Settl_Column" Unit="m" SymbolStyle="Rectangle" 
+                                            PresentationMethod="Vector2D" PresentationScale="1000"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/8"/>
+                        <mon:MonitoringLayer Name="Settl_RetainingPile" Unit="mm" SymbolStyle="Rectangle"
+                                            PresentationMethod="Vector2D" PresentationScale="1"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/9"/>
+                        <mon:MonitoringLayer Name="WaterTable" Unit="m" SymbolStyle="Rectangle"
+                                            PresentationMethod="Vector2D" PresentationScale="1"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/10"/>
+                        <mon:MonitoringLayer Name="PorePressure" Unit="MPa" SymbolStyle="Rectangle"
+                                            PresentationMethod="VerticalCurve" PresentationScale="-200" PresentationWidth="-5.0"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/11"/>
+                        <mon:MonitoringLayer Name="SoilPressure" Unit="MPa" SymbolStyle="Rectangle"
+                                            PresentationMethod="VerticalCurve" PresentationScale="-200" PresentationWidth="-5.0"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/12"/>
+                        <mon:MonitoringLayer Name="MemFrc_RetainingPile" Unit="MPa" SymbolStyle="Rectangle"
+                                            PresentationMethod="VerticalCurve" PresentationScale="1" PresentationWidth="-5.0"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/13"/>
+                        <mon:MonitoringLayer Name="WallDeflection" Unit="mm" SymbolStyle="Circle"
+                                            PresentationMethod="VerticalCurve" PresentationScale="1" PresentationWidth="-1.0"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/14"/>
+                        <mon:MonitoringLayer Name="Settl_Subway" Unit="m" SymbolStyle="Circle"
+                                            PresentationMethod="VerticalBar" PresentationScale="1000"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/15">
+                        </mon:MonitoringLayer>
+                    </mon:MonitoringsDef.MonitoringLayers>
+                    <mon:MonitoringsDef.WarningLevels>
+                        <mon:MonitoringWarningLevel WarningColor="LimeGreen" Description="Level 1 - Low risk" Flash="False" />
+                        <mon:MonitoringWarningLevel WarningColor="Orange" Description="Level 2 - Medium risk" Flash="False" />
+                        <mon:MonitoringWarningLevel WarningColor="Red" Description="Level 3 - High risk" Flash="True" />
+                    </mon:MonitoringsDef.WarningLevels>
+                </mon:MonitoringsDef>
+          </emap:EngineeringMap.Monitorings>
+          <emap:EngineeringMap.Numerics>
+                <num:NumericsDef>
+                    <num:NumericsDef.MeshLayers>
+                        <num:MeshLayer Name="TriangulationMesh"
+                                      NodeFeatureUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/26"
+                                      ElementFeatureUrl="http://PC-201301191114/ArcGIS/rest/services/Pingan008/MapServer/27">
+                        </num:MeshLayer>
+                    </num:NumericsDef.MeshLayers>
+                    <num:NumericsDef.NumericLayers>
+                        <num:NumericLayer Name="GroundSettlement"
+                                          MeshName="TriangulationMesh">
+                            <num:NumericLayer.BreakInfos>
+                                <num:BreakInfo MinValue="0" MaxValue="0.001" Fill="#00FFFFFF"/>
+                                <num:BreakInfo MinValue="0.001" MaxValue="0.01" Fill="Blue"/>
+                                <num:BreakInfo MinValue="0.01" MaxValue="0.02" Fill="Green"/>
+                                <num:BreakInfo MinValue="0.02" MaxValue="0.03" Fill="Yellow"/>
+                                <num:BreakInfo MinValue="0.03" MaxValue="0.04" Fill="Orange"/>
+                                <num:BreakInfo MinValue="0.04" MaxValue="0.06" Fill="Red"/>
+                            </num:NumericLayer.BreakInfos>
+                        </num:NumericLayer>
+                    </num:NumericsDef.NumericLayers>
+                </num:NumericsDef>
+            </emap:EngineeringMap.Numerics>
+        </emap:EngineeringMap>
+        <emap:EngineeringMap MapID="PinganMonitorProfileMap" SubProjectID="SubProject1"
+                            MapUrl="http://myhomeserver/ArcGIS/rest/services/PinganProfileMap/MapServer"
+                            MinimumResolution="0.02"
+                            MapType="GeneralProfileMap"
+                        >
+          <emap:EngineeringMap.Backgrounds>
+            <emap:BackgroundsDef>
+              <emap:BackgroundsDef.BaseLayers>
+                <emap:GISLayer Name="ProfilePoints" />
+                <emap:GISLayer Name="ProfilePolylines" />
+                <emap:GISLayer Name="ProfilePolygons" />
+              </emap:BackgroundsDef.BaseLayers>
+            </emap:BackgroundsDef>
+          </emap:EngineeringMap.Backgrounds>
+          <emap:EngineeringMap.Monitorings>
+                <mon:MonitoringsDef InterestedMonitoringValue="Total">
+                    <mon:MonitoringsDef.MonitoringLayers>
+                        <mon:MonitoringLayer Name="Settl_Ground" Unit="m" SymbolStyle="Rectangle"
+                                            PresentationMethod="HorizontalCurve" PresentationScale="100" PresentationWidth="0.2"
+                                            PresentationTextOption="MinMaxTextPerItem"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://myhomeserver/ArcGIS/rest/services/PinganProfileMap/MapServer/0"/>
+                        <mon:MonitoringLayer Name="SoilPressure" Unit="MPa" SymbolStyle="Rectangle"
+                                            PresentationMethod="VerticalCurve" PresentationScale="100" PresentationWidth="0.2"
+                                            PresentationTextOption="MinMaxTextPerItem"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://myhomeserver/ArcGIS/rest/services/PinganProfileMap/MapServer/1"/>
+                        <mon:MonitoringLayer Name="PorePressure" Unit="MPa" SymbolStyle="Rectangle"
+                                            PresentationMethod="VerticalCurve" PresentationScale="100" PresentationWidth="0.2"
+                                            PresentationTextOption="MinMaxTextPerItem"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://myhomeserver/ArcGIS/rest/services/PinganProfileMap/MapServer/2"/>
+                        <mon:MonitoringLayer Name="MemFrc_RetainingPile" Unit="MPa" SymbolStyle="Rectangle"
+                                            PresentationMethod="VerticalCurve" PresentationScale="0.5" PresentationWidth="0.2"
+                                            PresentationTextOption="MinMaxTextPerItem"
+                                            Visible="False"
+                                            FeatureServiceUrl="http://myhomeserver/ArcGIS/rest/services/PinganProfileMap/MapServer/3"/>
+                    </mon:MonitoringsDef.MonitoringLayers>
+                    <mon:MonitoringsDef.WarningLevels>
+                        <mon:MonitoringWarningLevel WarningColor="LimeGreen" Description="Level 1 - Low risk" Flash="False" />
+                        <mon:MonitoringWarningLevel WarningColor="Orange" Description="Level 2 - Medium risk" Flash="False" />
+                        <mon:MonitoringWarningLevel WarningColor="Red" Description="Level 3 - High risk" Flash="True" />
+                    </mon:MonitoringsDef.WarningLevels>
+                </mon:MonitoringsDef>
+            </emap:EngineeringMap.Monitorings>
+        </emap:EngineeringMap>
+    </pm:ProjectDefinition.EngineeringMaps>
+        
+</pm:ProjectDefinition>

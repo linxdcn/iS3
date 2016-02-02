@@ -1,0 +1,130 @@
+﻿<Project>
+  <is3:ProjectDefinition xmlns="http://schemas.microsoft.com/client/2007"
+                         xmlns:is3="clr-namespace:IS3.Core;assembly=IS3.Core"
+                         GeometryServiceUrl="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
+                         ID="Shanghai_ML13"
+                         ProjectTitle="Shanghai Metro Line No.13"
+                         LocalDatabaseName="SH_MetroL13.mdb"
+                         DefaultMapID="BaseMap">
+    <is3:ProjectDefinition.SubProjectInfos>
+      <is3:ShieldTunnelProjectInformation ID="BoredTunnel"
+                             ProjectType="ShieldTunnel"
+                             Length="6872.37"
+                             OuterDiameter="6.0"
+                             InnerDiamter="5.2"/>
+    </is3:ProjectDefinition.SubProjectInfos>
+    <is3:ProjectDefinition.EngineeringMaps>
+      <is3:EngineeringMap MapID="BaseMap"
+                    LocalTileFileName1="Shanghai_LOD16_CityBlocks.tpk"
+                    LocalTileFileName2="SHMetroLine13.tpk"
+                    LocalGeoDbFileName="SHMetroLine13.geodatabase"
+                    MinimumResolution="0.1"
+                    MapType="FootPrintMap"
+                    XMin="13501500" YMin="3658000"
+                    XMax="13520000" YMax="3665000">
+        <is3:EngineeringMap.LocalGdbLayersDef>
+          <is3:LayerDef Name="DES_AXL" GeometryType="Polyline"
+                        OutlineColor="Red"
+                        Color="Red" FillStyle="Solid"
+                        IsVisible="True"/>
+          <is3:LayerDef Name="GEO_BHL" GeometryType="Point"
+                        OutlineColor="Black" MarkerSize="8"
+                        Color="Green" FillStyle="Solid"/>   
+          <is3:LayerDef Name="DES_STA" GeometryType="Polyline"
+                        OutlineColor="Blue"
+                        Color="Blue" FillStyle="Solid"/>
+          <is3:LayerDef Name="DES_TUN" GeometryType="Polygon"
+                        OutlineColor="Blue"
+                        Color="Blue" FillStyle="Solid"
+                        IsVisible="True"/>
+          <is3:LayerDef Name="DES_RIN" GeometryType="Polygon"
+                        OutlineColor="Blue"
+                        Color="LightGray" FillStyle="Solid"
+                        IsVisible="False"/>
+        </is3:EngineeringMap.LocalGdbLayersDef>
+      </is3:EngineeringMap>
+      <is3:EngineeringMap MapID="ProfileMap"
+                    LocalTileFileName1="Empty.tpk"
+                    MinimumResolution="0.1"
+                    MapType="GeneralProfileMap"
+                    XMin="0" YMin="0"
+                    XMax="300" YMax="300">
+      </is3:EngineeringMap>
+    </is3:ProjectDefinition.EngineeringMaps>
+  </is3:ProjectDefinition>
+
+  <Domain Name="Geology" Type="Geology">
+    <ObjsDefinition>
+      <Borehole HasGeometry="true" Name="Allboreholes" GISLayerName="GEO_BHL"
+                TableNameSQL="Boreholes,BoreholeStrataInfo" OrderSQL="[Name]"/>
+      <Stratum HasGeometry="true" Name="AllStratum" GISLayerName="GEO_STR"
+                TableNameSQL="Strata" />
+      <StratumSection Name="AllStratumSections" TableNameSQL="StrataSection" />
+      <SoilProperty Name="AllSoilProperties" TableNameSQL="SoilProperties"/>
+      <PhreaticWater Name="AllPhreaticWaters" TableNameSQL="PhreaticWater"/>
+      <ConfinedWater Name="AllConfinedWaters" TableNameSQL="ConfinedWater"/>
+      <WaterProperty Name="AllWaterProperties" TableNameSQL="WaterProperties"/>
+    </ObjsDefinition>
+    <TreeDefinition>
+      <Geology  DisplayName="Geology" Desc="See geology report for complete information.">
+        <EngineeringGeology DisplayName="Engineering Geology" Desc="Engineering geology information">
+          <Borehole DisplayName="Boreholes" Desc="Select a borehole for detail."
+                    RefDomainName="Geology" RefObjsName="Allboreholes" />
+          <Stratum DisplayName="Stratum" Desc="Select a strata for detail."
+                    RefDomainName="Geology" RefObjsName="AllStratum" />
+          <SoilProperties DisplayName="Soil Properties" Desc="All soil properties.">
+            <SoilProperty DisplayName="Soil Properties(HuangJiang Rd. to West JingShaJiang Rd.)"
+                          Desc="Select a soil for detail."
+                          RefDomainName="Geology" RefObjsName="AllSoilProperties" Filter="[StratumSectionID]=1"/>
+            <SoilProperty DisplayName="Soil Properties (West JingShaJiang Rd. to Fengzhuang)"
+                          Desc="Select a soil for detail."
+                          RefDomainName="Geology" RefObjsName="AllSoilProperties" Filter="[StratumSectionID]=2"/>
+          </SoilProperties>
+        </EngineeringGeology>
+        <Hydrology DisplayName="Hydrology" Desc="Hydrology information">
+          <PhreaticWater DisplayName="PhreaticWater" Desc="Phreatic water information" HasObj="true" 
+                         RefDomainName="Geology" RefObjsName="AllPhreaticWaters"/>
+          <ConfinedWater DisplayName="ConfinedWater" Desc="Confined water information" HasObj="true"
+                         RefDomainName="Geology" RefObjsName="AllConfinedWaters"/>
+          <WaterProperty DisplayName="WaterProperties" Desc="Water properties" HasObj="true"
+                         RefDomainName="Geology" RefObjsName="AllWaterProperties"/>
+        </Hydrology>
+      </Geology>
+    </TreeDefinition>
+  </Domain>
+
+  <Domain Name="Structure" Type="Structure">
+    <ObjsDefinition>
+      <Tunnel HasGeometry="true" Name="AllTunnels" GISLayerName="DES_TUN"
+                TableNameSQL="Tunnels"/>
+      <SegmentLining HasGeometry="true" Name="AllSegmentLinings" GISLayerName="DES_RIN" OrderSQL="[ID]"
+            TableNameSQL="SegmentLinings,SLConstructionRecords,TBMDrivingRecords,TBMPostureRecords,SLPostureRecords,SLSettlement,SLConvergence,SLSpall,SLCrack,Dislocation,JointOpening,Leakage"/>
+      <TunnelAxis HasGeometry="true" Name="AllTunnelAxes"
+                  GISLayerName="DES_AXL" TableNameSQL="TunnelAxes,TunnelAxesPoints"/>
+      <SLType Name="AllSLTypes" TableNameSQL="SLType,SLBaseType,Segments"/>
+    </ObjsDefinition>
+    <TreeDefinition>
+      <Structure DisplayName="Structure" Desc="Shanghai Metro Line No. 12 Structures">
+        <Tunnel DisplayName="Tunnel" Desc="Tunnels"
+                RefDomainName="Structure" RefObjsName="AllTunnels" >
+          <BoredTunnel DisplayName="UpGoing" Desc="Upgoing tunnel">
+            <SegmentLining DisplayName="HuangJiang Rd. to West JingShaJiang Rd." Desc="Select a segment lining for detail."
+                           RefDomainName="Structure" RefObjsName="AllSegmentLinings" Filter="[LineNo]=1"/>
+            <SegmentLining DisplayName="West JingShaJiang Rd. to Fengzhuang" Desc="Select a segment lining for detail."
+                           RefDomainName="Structure" RefObjsName="AllSegmentLinings" Filter="[LineNo]=3"/>
+          </BoredTunnel>
+          <BoredTunnel DisplayName="DownDoing" Desc="Downgoing tunnel">
+            <SegmentLining DisplayName="HuangJiang Rd. to West JingShaJiang Rd." Desc="Select a segment lining for detail."
+                           RefDomainName="Structure" RefObjsName="AllSegmentLinings" Filter="[LineNo]=2"/>
+            <SegmentLining DisplayName="West JingShaJiang Rd. to Fengzhuang" Desc="Select a segment lining for detail."
+                           RefDomainName="Structure" RefObjsName="AllSegmentLinings" Filter="[LineNo]=4"/>
+          </BoredTunnel>
+          <SLType DisplayName="SLType" Desc="SlTpye" RefDomainName="Structure" RefObjsName="AllSLTypes"/>
+        </Tunnel>
+      </Structure>
+    </TreeDefinition>
+  </Domain>
+  <Domain Name="Analysis" Type="Unknown">
+
+  </Domain>
+</Project>

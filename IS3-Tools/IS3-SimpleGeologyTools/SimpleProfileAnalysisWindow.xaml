@@ -1,0 +1,84 @@
+﻿<Window x:Class="IS3.SimpleGeologyTools.SimpleProfileAnalysisWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        Title="Geology profile analysis" Height="420" Width="400"
+        Topmost="True"
+        ResizeMode="NoResize">
+    <Grid x:Name="LayoutRoot" Background="White">
+
+        <ScrollViewer Width="380" Height="330"
+                      VerticalAlignment="Top">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="330"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="SettingsHolder"
+                    Orientation="Vertical" Margin="5,5,5,0">
+                    <TextBlock Text="Input view:" Margin="0,5,5,0"/>
+                    <TextBox x:Name="InputViewTB" Margin="0,5,5,0"
+                             Text="{Binding Path=eMap.MapID}" 
+                             IsReadOnly="True"/>
+                    <TextBlock Text="Output view:" Margin="0,5,5,0"/>
+                    <ComboBox x:Name="OutputCB" Margin="0,5,5,0"
+                              DisplayMemberPath="eMap.MapID"
+                              AllowDrop="True"/>
+                    <TextBlock Text="Boreholes:" Margin="0,5,5,0"/>
+                    <ComboBox x:Name="BoreholeCB"  Margin="0,5,5,0"
+                              DisplayMemberPath="name" IsReadOnly="True"
+                              AllowDrop="True"/>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Projection Line: " Margin="0,5,5,0"/>
+                        <RadioButton x:Name="RB1" GroupName="RBGroup" Margin="0,5,5,0"
+                             Content="Along with tunnel" IsChecked="True" Checked="RadioButton_Checked"/>
+                        <RadioButton x:Name="RB2" GroupName="RBGroup" Margin="0,5,5,0"
+                             Content="Custom" Checked="RadioButton_Checked"/>
+                    </StackPanel>
+                    <ListBox x:Name="LineLB" Margin="0,5,5,0"
+                             DisplayMemberPath="Item2"
+                             Height="100"/>
+                    <CheckBox Content="Draw borehole" Margin="0,5,5,0"
+                      IsChecked="{Binding drawBorehole, Mode=TwoWay}" />
+                    <CheckBox Content="Draw strata" Margin="0,5,5,0"
+                      IsChecked="{Binding drawStratum, Mode=TwoWay}"/>
+                    <CheckBox Content="Extend borehole to same depth"
+                              Margin="0,5,5,0"
+                      IsChecked="{Binding extendBorehole, Mode=TwoWay}" />
+                    <CheckBox Content="Clip within projection line"
+                              Margin="0,5,5,0"
+                      IsChecked="{Binding clipInProjectionLine, Mode=TwoWay}"/>
+                    <CheckBox Content="Draw a X-axis line"
+                              Margin="0,5,5,0"
+                      IsChecked="{Binding drawProjectionLine, Mode=TwoWay}"/>
+                    <TextBlock Text="X Offset:" Margin="0,5,5,0"/>
+                    <TextBox Text="{Binding xOffset, Mode=TwoWay}"
+                             Margin="0,5,5,0"/>
+                    <TextBlock Text="Z factor:" Margin="0,5,5,0"/>
+                    <TextBox Text="{Binding zScale, Mode=TwoWay}"
+                             Margin="0,5,5,0"/>
+                    <TextBlock Text="Interval:" Margin="0,5,5,0"/>
+                    <TextBox Text="{Binding interval, Mode=TwoWay}"
+                             Margin="0,5,5,0"/>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,10,10">
+            <Button Content="Start"
+                    Click="Start_Click"
+                    Width="100"/>
+            <Button Content="Cancel"
+                    Click="Cancel_Click"
+                    Width="100"
+                    Margin="20,0,0,0"/>
+        </StackPanel>
+
+    </Grid>
+</Window>

@@ -1,0 +1,82 @@
+﻿<pm:ProjectDefinition xmlns="http://schemas.microsoft.com/client/2007"
+                      xmlns:pm="clr-namespace:IS3.Core.Project;assembly=IS3.Core"
+                      xmlns:emap="clr-namespace:IS3.Core.EMap;assembly=IS3.Core"
+                      xmlns:mon="clr-namespace:IS3.Core.Monitoring;assembly=IS3.Core"
+                      xmlns:num="clr-namespace:IS3.Core.Numerics;assembly=IS3.Core"
+                      ID="Shanghai_YangtzeRiverTunnel"
+                      ProjectTitle="Shanghai Yangtze River Tunnel Project"
+                      DataServiceUrl="http://localhost:2872/WebServices/DataService.asmx"
+                      GeometryServiceUrl="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
+                      DefaultMapID="BaseMap"
+                      UseGeographicMap="True">
+    <pm:ProjectDefinition.SubProjectInfos>
+        <pm:ShieldTunnelProjectInformation ID="BoredTunnel"
+                                            ProjectType="ShieldTunnel"
+                                            Length="6872.37"
+                                            OuterDiameter="15.0"
+                                            InnerDiamter="13.7"
+                                            />
+    </pm:ProjectDefinition.SubProjectInfos>
+    <pm:ProjectDefinition.EngineeringMaps>
+        <emap:EngineeringMap MapID="BaseMap" SubProjectID="BoredTunnel"
+                            MapUrl="http://pc-201301191114/ArcGIS/rest/services/YRT/MapServer"
+                            MinimumResolution="0.1"
+                            MapType="FootPrintMap"
+                             XMin="13544400" YMin="3672000"
+                             XMax="13549700" YMax="3684000">
+          <emap:EngineeringMap.Backgrounds>
+            <emap:BackgroundsDef>
+              <emap:BackgroundsDef.BaseLayers>
+                <emap:GISLayer Name="CADBaseMap" />
+                <emap:GISLayer Name="RiverBedContour" />
+                <emap:GISLayer Name="SegmentLinings" />
+                <emap:GISLayer Name="CrossPassages" />
+                <emap:GISLayer Name="Shafts" />
+                <emap:GISLayer Name="Tunnels" />
+                <emap:GISLayer Name="TunnelAxesPoints" />
+                <emap:GISLayer Name="Tunnel3DAxes" />
+                <emap:GISLayer Name="Boreholes" />
+              </emap:BackgroundsDef.BaseLayers>
+            </emap:BackgroundsDef>
+          </emap:EngineeringMap.Backgrounds>
+          <emap:EngineeringMap.Geologies>
+            <emap:GeologyDef>
+              <emap:GeologyDef.GeologyLayers>
+                <emap:GeologyLayer Name="Boreholes" LayerType="Borehole"
+                                 FeatureServiceUrl="http://pc-201301191114/ArcGIS/rest/services/YRT/MapServer/11"/>
+              </emap:GeologyDef.GeologyLayers>
+            </emap:GeologyDef>
+          </emap:EngineeringMap.Geologies>
+          <emap:EngineeringMap.Structures>
+            <emap:StructuresDef>
+              <emap:StructuresDef.StructureLayers>
+                <emap:StructureLayer Name="SegmentLinings"
+                                   FeatureServiceUrl="http://pc-201301191114/ArcGIS/rest/services/YRT/MapServer/1"/>
+                <emap:StructureLayer Name="CrossPassages"
+                                   FeatureServiceUrl="http://pc-201301191114/ArcGIS/rest/services/YRT/MapServer/2"/>
+                <emap:StructureLayer Name="Shafts"
+                                   FeatureServiceUrl="http://pc-201301191114/ArcGIS/rest/services/YRT/MapServer/3"/>
+                <emap:StructureLayer Name="Tunnels"
+                                   FeatureServiceUrl="http://pc-201301191114/ArcGIS/rest/services/YRT/MapServer/4"/>
+                <emap:StructureLayer Name="Tunnel3DAxes"
+                                   FeatureServiceUrl="http://pc-201301191114/ArcGIS/rest/services/YRT/MapServer/6"/>
+              </emap:StructuresDef.StructureLayers>
+            </emap:StructuresDef>
+          </emap:EngineeringMap.Structures>
+        </emap:EngineeringMap>
+        <emap:EngineeringMap MapID="CSMap1" SubProjectID="BoredTunnel"
+                           MapUrl="http://pc-201301191114/ArcGIS/rest/services/CrossSection/MapServer"
+                           MinimumResolution="0.02"
+                           MapType="GeneralProfileMap">
+          <emap:EngineeringMap.Backgrounds>
+            <emap:BackgroundsDef>
+              <emap:BackgroundsDef.BaseLayers>
+                <emap:GISLayer Name="Interior" />
+                <emap:GISLayer Name="SL" />
+              </emap:BackgroundsDef.BaseLayers>
+            </emap:BackgroundsDef>
+            </emap:EngineeringMap.Backgrounds>
+        </emap:EngineeringMap>
+    </pm:ProjectDefinition.EngineeringMaps>
+
+</pm:ProjectDefinition>
