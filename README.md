@@ -1,4 +1,4 @@
-#IS3
+#iS3
 
 Copyright (c) 2015 Tongji University iS3 Team. All rights reserved.
 
