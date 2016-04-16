@@ -6,7 +6,7 @@ from System.Windows.Media import Colors
 
 emap = is3.EngineeringMap('test', 0, 0, 100, 100, 0.01)
 safe_view = is3.MainframeWrapper.addView(emap)
-safe_view.addLocalTiledLayer('D:\\IS3\\Data\\TPKs\\Empty.tpk', 'baselayer')
+safe_view.addLocalTiledLayer('C:\\IS3\\Data\\TPKs\\Empty.tpk', 'baselayer')
 
 
 sym_point = is3.graphicsEngine.newSimpleMarkerSymbol(
