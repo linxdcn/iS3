@@ -26,6 +26,10 @@
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜38点,测斜38数据"
                 OrderSQL="[Name],[time]"/>
+      <MonPoint HasGeometry="true" Name="QS-65"
+                GISLayerName="WallDeflection"
+                TableNameSQL="测斜65点,测斜65数据"
+                OrderSQL="[Name],[time]"/>
       <MonPoint HasGeometry="true" Name="QS-83"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜83点,测斜83数据"
@@ -122,7 +126,7 @@
           </Group>
 
           <Group DisplayName="测斜">
-            <MonGroup DisplayName="土压力组"
+            <MonGroup DisplayName="测斜组"
                       RefDomainName="Monitoring"
                       RefObjsName="WallDeflectionGroup"/>
             <MonPoint DisplayName="QS-26"
@@ -131,6 +135,24 @@
             <MonPoint DisplayName="QS-38"
                       RefDomainName="Monitoring"
                       RefObjsName="QS-38"/>
+            <MonPoint DisplayName="QS-65"
+                      RefDomainName="Monitoring"
+                      RefObjsName="QS-65"/>
+            <MonPoint DisplayName="QS-83"
+                      RefDomainName="Monitoring"
+                      RefObjsName="QS-83"/>
+            <MonPoint DisplayName="QS-93"
+                      RefDomainName="Monitoring"
+                      RefObjsName="QS-93"/>
+            <MonPoint DisplayName="QS-99"
+                      RefDomainName="Monitoring"
+                      RefObjsName="QS-99"/>
+            <MonPoint DisplayName="QS-147"
+                      RefDomainName="Monitoring"
+                      RefObjsName="QS-147"/>
+            <MonPoint DisplayName="QS-202"
+                      RefDomainName="Monitoring"
+                      RefObjsName="QS-202"/>
           </Group>
           
         </Monitoring>

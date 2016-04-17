@@ -129,6 +129,8 @@ namespace IS3.Monitoring
             foreach (var obj in objs)
             {
                 MonGroup group = obj as MonGroup;
+                if (obj == null)
+                    continue;
                 foreach (string name in group.monPntNames)
                 {
                     sql += '\'' + name + '\'';
