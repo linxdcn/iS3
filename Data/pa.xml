@@ -2,8 +2,8 @@
   <is3:ProjectDefinition xmlns="http://schemas.microsoft.com/client/2007"
                          xmlns:is3="clr-namespace:IS3.Core;assembly=IS3.Core"
                          GeometryServiceUrl="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
-                         ID="IS3" ProjectTitle="iS3" DefaultMapID="BaseMap"
-                         LocalFilePath="C:\Win8 File\百度云同步盘\mac同步\IS3(newest)\Data\SZ_Pingan"
+                         ID="IS3" ProjectTitle="平安基坑数字化安全监控系统" DefaultMapID="BaseMap"
+                         LocalFilePath="D:\iS3\Data\SZ_Pingan"
                          LocalDatabaseName="SZ_Pingan.mdb">
     <!--<is3:ProjectDefinition.EngineeringMaps>
       <is3:EngineeringMap MapID="BaseMap"
@@ -17,31 +17,122 @@
   
   <Domain Name="Monitoring" Type="Monitoring">
     <ObjsDefinition>
+
+      <MonPoint HasGeometry="true" Name="QS-26"
+                GISLayerName="WallDeflection"
+                TableNameSQL="测斜26点,测斜26数据"
+                OrderSQL="[Name],[time]"/>
+      <MonPoint HasGeometry="true" Name="QS-38"
+                GISLayerName="WallDeflection"
+                TableNameSQL="测斜38点,测斜38数据"
+                OrderSQL="[Name],[time]"/>
+      <MonPoint HasGeometry="true" Name="QS-83"
+                GISLayerName="WallDeflection"
+                TableNameSQL="测斜83点,测斜83数据"
+                OrderSQL="[Name],[time]"/>
+      <MonPoint HasGeometry="true" Name="QS-93"
+                GISLayerName="WallDeflection"
+                TableNameSQL="测斜93点,测斜93数据"
+                OrderSQL="[Name],[time]"/>
+      <MonPoint HasGeometry="true" Name="QS-99"
+                GISLayerName="WallDeflection"
+                TableNameSQL="测斜99点,测斜99数据"
+                OrderSQL="[Name],[time]"/>
+      <MonPoint HasGeometry="true" Name="QS-147"
+                GISLayerName="WallDeflection"
+                TableNameSQL="测斜147点,测斜147数据"
+                OrderSQL="[Name],[time]"/>
+      <MonPoint HasGeometry="true" Name="QS-202"
+                GISLayerName="WallDeflection"
+                TableNameSQL="测斜202点,测斜202数据"
+                OrderSQL="[Name],[time]"/>
+      <MonGroup HasGeometry="true" Name="WallDeflectionGroup"
+                GISLayerName="WallDeflection"
+                TableNameSQL="测斜组"
+                OrderSQL="[Name],[time]"/>
+
       <MonPoint HasGeometry="true" Name="HorDis_RetainingPile"
                 GISLayerName="HorDis_RetainingPile"
-                TableNameSQL="HorDis_RetainingPile,HorDis_RetainingPileData"
+                TableNameSQL="支护桩水平位移测点,支护桩水平位移数据"
                 OrderSQL="[Name],[time]"/>
+      <MonPoint HasGeometry="true" Name="Settl_RetainingPile"
+                GISLayerName="Settl_RetainingPile"
+                TableNameSQL="支护桩沉降点,支护桩沉降数据"
+                OrderSQL="[Name],[time]"/>
+
       <MonPoint HasGeometry="true" Name="Settl_Ground"
                 GISLayerName="Settl_Ground"
-                TableNameSQL="Settl_Ground,Settl_GroundData"
+                TableNameSQL="地表沉降点,地表沉降数据"
                 OrderSQL="[Name],[time]"/>
       <MonGroup HasGeometry="true" Name="Settl_GroundGroup"
                 GISLayerName="Settl_GroundGroup"
-                TableNameSQL="Settl_GroundGroup"
+                TableNameSQL="地表沉降组"
                 OrderSQL="[Name],[time]"/>
+      
+      <MonPoint HasGeometry="true" Name="HorDis_1stCircularStrut"
+                GISLayerName="HorDis_1stCircularStrut"
+                TableNameSQL="第一道环撑位移点,第一道环撑位移数据"
+                OrderSQL="[Name],[time]"/>
+
+      <MonPoint HasGeometry="true" Name="Soil_Pressure"
+                GISLayerName="SoilPressure"
+                TableNameSQL="土压力测点,土压力数据"
+                OrderSQL="[Name],[time]"/>
+      <MonGroup HasGeometry="true" Name="Soil_PressureGroup"
+                GISLayerName="SoilPressure"
+                TableNameSQL="土压力组"
+                OrderSQL="[Name],[time]"/>
+      
+
     </ObjsDefinition>
     <TreeDefinition>
       <Root>
         <Monitoring DisplayName="基坑监测">
-          <MonPoint DisplayName="桩顶水平位移"
-                    RefDomainName="Monitoring"
-                    RefObjsName="HorDis_RetainingPile"/>
-          <MonPoint DisplayName="地表沉降点"
-                    RefDomainName="Monitoring"
-                    RefObjsName="Settl_Ground"/>
-          <MonGroup DisplayName="地表沉降组"
-                    RefDomainName="Monitoring"
-                    RefObjsName="Settl_GroundGroup"/>
+          <Group DisplayName="围护桩">
+            <MonPoint DisplayName="桩顶水平位移"
+                      RefDomainName="Monitoring"
+                      RefObjsName="HorDis_RetainingPile"/>
+            <MonPoint DisplayName="桩顶沉降"
+                      RefDomainName="Monitoring"
+                      RefObjsName="Settl_RetainingPile"/>
+          </Group>
+          
+          <Group DisplayName="地表沉降">
+            <MonGroup DisplayName="地表沉降组"
+                      RefDomainName="Monitoring"
+                      RefObjsName="Settl_GroundGroup"/>
+            <MonPoint DisplayName="地表沉降点"
+                      RefDomainName="Monitoring"
+                      RefObjsName="Settl_Ground"/>
+          </Group>
+
+          <Group DisplayName="环撑水平位移">
+            <MonPoint DisplayName="第一道"
+                      RefDomainName="Monitoring"
+                      RefObjsName="HorDis_1stCircularStrut"/>
+          </Group>
+
+          <Group DisplayName="土压力">
+            <MonGroup DisplayName="土压力组"
+                      RefDomainName="Monitoring"
+                      RefObjsName="Soil_PressureGroup"/>
+            <MonPoint DisplayName="土压力点"
+                      RefDomainName="Monitoring"
+                      RefObjsName="Soil_Pressure"/>
+          </Group>
+
+          <Group DisplayName="测斜">
+            <MonGroup DisplayName="土压力组"
+                      RefDomainName="Monitoring"
+                      RefObjsName="WallDeflectionGroup"/>
+            <MonPoint DisplayName="QS-26"
+                      RefDomainName="Monitoring"
+                      RefObjsName="QS-26"/>
+            <MonPoint DisplayName="QS-38"
+                      RefDomainName="Monitoring"
+                      RefObjsName="QS-38"/>
+          </Group>
+          
         </Monitoring>
       </Root>
     </TreeDefinition>

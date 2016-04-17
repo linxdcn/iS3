@@ -209,7 +209,8 @@ namespace IS3.Monitoring.Serialization
 
                 obj.groupShape = ReadString(row, "groupShape");
                 string str = ReadString(row, "monPntNames");
-                obj.monPntNames = str.Split(_separator);
+                if (str != null)
+                    obj.monPntNames = str.Split(_separator);
 
                 objs[obj.key] = obj;
             }

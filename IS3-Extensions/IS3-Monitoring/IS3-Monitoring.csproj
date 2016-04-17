@@ -52,7 +52,16 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChartHelper.cs" />
     <Compile Include="FormsCharting.cs" />
+    <Compile Include="MonGroupChart.xaml.cs">
+      <DependentUpon>MonGroupChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MonGroupChartLinearX.cs" />
+    <Compile Include="MonGroupChartLinearZ.cs" />
+    <Compile Include="MonPointChart.xaml.cs">
+      <DependentUpon>MonPointChart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WpfCharting.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="MonGroup.cs" />
@@ -62,6 +71,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\MonitoringDbDataLoader.cs" />
     <Compile Include="Serialization\MonitoringDGObjectLoader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MonGroupChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MonPointChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

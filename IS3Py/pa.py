@@ -29,6 +29,16 @@ def addLayer(viewWP):
     layerWrapper = is3.addGdbLayer(viewWP, layerDef)
 
     layerDef = is3.LayerDef()
+    layerDef.Name = 'Settl_RetainingPile'
+    layerDef.GeometryType = is3.GeometryType.Point
+    layerDef.Color = Colors.Green
+    layerDef.MarkerSize = 12
+    layerDef.MarkerStyle = is3.SimpleMarkerStyle.Square
+    layerDef.EnableLabel = True
+    layerDef.LabelTextExpression = '[Name]'
+    layerWrapper = is3.addGdbLayer(viewWP, layerDef)
+
+    layerDef = is3.LayerDef()
     layerDef.Name = 'Settl_Ground'
     layerDef.GeometryType = is3.GeometryType.Point
     layerDef.Color = Colors.Green
@@ -43,6 +53,36 @@ def addLayer(viewWP):
     layerDef.GeometryType = is3.GeometryType.Polyline
     layerDef.Color = Colors.Cyan
     layerDef.LineWidth = 3
+    layerDef.EnableLabel = True
+    layerDef.LabelTextExpression = '[Name]'
+    layerWrapper = is3.addGdbLayer(viewWP, layerDef)
+
+    layerDef = is3.LayerDef()
+    layerDef.Name = 'HorDis_1stCircularStrut'
+    layerDef.GeometryType = is3.GeometryType.Point
+    layerDef.Color = Colors.Red
+    layerDef.MarkerSize = 12
+    layerDef.MarkerStyle = is3.SimpleMarkerStyle.Square
+    layerDef.EnableLabel = True
+    layerDef.LabelTextExpression = '[Name]'
+    layerWrapper = is3.addGdbLayer(viewWP, layerDef)
+
+    layerDef = is3.LayerDef()
+    layerDef.Name = 'SoilPressure'
+    layerDef.GeometryType = is3.GeometryType.Point
+    layerDef.Color = Colors.Red
+    layerDef.MarkerSize = 12
+    layerDef.MarkerStyle = is3.SimpleMarkerStyle.Triangle
+    layerDef.EnableLabel = True
+    layerDef.LabelTextExpression = '[Name]'
+    layerWrapper = is3.addGdbLayer(viewWP, layerDef)
+
+    layerDef = is3.LayerDef()
+    layerDef.Name = 'WallDeflection'
+    layerDef.GeometryType = is3.GeometryType.Point
+    layerDef.Color = Colors.Cyan
+    layerDef.MarkerSize = 12
+    layerDef.MarkerStyle = is3.SimpleMarkerStyle.Diamond
     layerDef.EnableLabel = True
     layerDef.LabelTextExpression = '[Name]'
     layerWrapper = is3.addGdbLayer(viewWP, layerDef)
