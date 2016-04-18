@@ -3,7 +3,7 @@
                          xmlns:is3="clr-namespace:IS3.Core;assembly=IS3.Core"
                          GeometryServiceUrl="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
                          ID="IS3" ProjectTitle="平安基坑数字化安全监控系统" DefaultMapID="BaseMap"
-                         LocalFilePath="D:\iS3\Data\SZ_Pingan"
+                         LocalFilePath="\iS3\Data\SZ_Pingan"
                          LocalDatabaseName="SZ_Pingan.mdb">
     <!--<is3:ProjectDefinition.EngineeringMaps>
       <is3:EngineeringMap MapID="BaseMap"

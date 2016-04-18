@@ -124,7 +124,8 @@ namespace IS3.Monitoring
                         double x = reading.value * _sign;
                         double y = monPoint.distanceZ.Value;
                         DataPoint dataPoint = new DataPoint(x, y);
-                        dataPoint.Label = monPoint.name;
+                        if (_showName)
+                            dataPoint.Label = monPoint.name;
                         dataPoint.ToolTip = "#VALX";
                         series1.Points.Add(dataPoint);
                     }

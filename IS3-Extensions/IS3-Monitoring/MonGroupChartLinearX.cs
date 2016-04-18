@@ -122,7 +122,8 @@ namespace IS3.Monitoring
                         double x = monPoint.distanceX.Value;
                         double y = reading.value * _sign;
                         DataPoint dataPoint = new DataPoint(x, y);
-                        dataPoint.Label = monPoint.name;
+                        if (_showName)
+                            dataPoint.Label = monPoint.name;
                         dataPoint.ToolTip = "#VALY";
                         series1.Points.Add(dataPoint);
                     }

@@ -63,15 +63,16 @@ namespace IS3.Monitoring
             setObjs(_objs);
         }
 
-        private void SignCheck_Clicked(object sender, RoutedEventArgs e)
+        private void TBSign_Clicked(object sender, RoutedEventArgs e)
         {
-            _sign = SignCheck.IsChecked == true ? -1 : 1;
+            _sign = TBSign.IsChecked == true ? -1 : 1;
             setObjs(_objs);
         }
 
         private void TBName_Clicked(object sender, RoutedEventArgs e)
         {
-
+            _showName = TBName.IsChecked == true ? true : false;
+            setObjs(_objs);
         }
 
     }

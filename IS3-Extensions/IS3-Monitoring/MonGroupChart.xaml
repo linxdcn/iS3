@@ -15,14 +15,19 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <ToggleButton x:Name="TBName"
-                      Content="Name" Margin="0,0,5,0"
-                      VerticalAlignment="Center" ClickMode="Press"
-                      Click="TBName_Clicked"/>
-            <ToggleButton x:Name="SignCheck"
-                      Content="+/-" Margin="0,0,5,0"
-                      VerticalAlignment="Center" ClickMode="Press"
-                      Click="SignCheck_Clicked"/>
+                          Content="#" Margin="0,0,5,0"
+                          VerticalAlignment="Center"
+                          ClickMode="Press"
+                          IsChecked="True"
+                          ToolTip="Toggle name on/off"
+                          Click="TBName_Clicked"/>
+            <ToggleButton x:Name="TBSign"
+                          Content="+/-" Margin="0,0,5,0"
+                          VerticalAlignment="Center" ClickMode="Press"
+                          ToolTip="Toggle +/- of Y value"
+                          Click="TBSign_Clicked"/>
             <ComboBox x:Name="DataCount" IsReadOnly="True"
+                      ToolTip="Select data count"
                       SelectedIndex="0"
                       SelectionChanged="DataCount_SelectionChanged">
                 <ComboBoxItem Content="1"/>
