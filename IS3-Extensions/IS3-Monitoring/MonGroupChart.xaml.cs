@@ -47,6 +47,7 @@ namespace IS3.Monitoring
     {
         IEnumerable<DGObject> _objs;
         protected int _sign = 1;
+        protected bool _showName = true;
         public MonGroupChart(double width, double height)
         {
             InitializeComponent();
@@ -66,6 +67,11 @@ namespace IS3.Monitoring
         {
             _sign = SignCheck.IsChecked == true ? -1 : 1;
             setObjs(_objs);
+        }
+
+        private void TBName_Clicked(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }

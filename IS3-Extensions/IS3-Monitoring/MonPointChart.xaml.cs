@@ -47,7 +47,7 @@ namespace IS3.Monitoring
     public partial class MonPointChart : UserControl
     {
         IEnumerable<DGObject> _objs;
-        protected int _sign = 1;
+        string _component = "ALL";
         public MonPointChart(double width, double height)
         {
             InitializeComponent();
@@ -61,7 +61,21 @@ namespace IS3.Monitoring
             if (objs == null || objs.Count() == 0)
                 return;
             MonPoint firstMonPoint = objs.First() as MonPoint;
+            if (firstMonPoint == null)
+                return;
             string unit = ChartHelper.getMonPointUnit(firstMonPoint);
+            
+            if (CBComponents.Items.Count == 1)
+            {
+                // initialize the display list when the control first show
+                // add componenet name 
+                foreach (string key in firstMonPoint.readingsDict.Keys)
+                {
+                    ComboBoxItem item = new ComboBoxItem();
+                    item.Content = key;
+                    CBComponents.Items.Add(item);
+                }
+            }
 
             Chart chart1 = new Chart();
             chart1.Name = "Chart1";
@@ -96,6 +110,9 @@ namespace IS3.Monitoring
                     continue;
                 foreach (string key in monPnt.readingsDict.Keys)
                 {
+                    if (_component != "ALL" && _component != key)
+                        continue;
+
                     List<MonReading> readings = monPnt.readingsDict[key];
                     if (readings.Count == 0)
                         continue;
@@ -114,9 +131,11 @@ namespace IS3.Monitoring
             chartHost.Child = chart1;
         }
 
-        private void SignCheck_Clicked(object sender, RoutedEventArgs e)
+        private void CBComponents_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _sign = SignCheck.IsChecked == true ? -1 : 1;
+            ComboBoxItem item = CBComponents.SelectedItem as ComboBoxItem;
+            _component = item.Content.ToString();
+
             setObjs(_objs);
         }
     }
