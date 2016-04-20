@@ -47,6 +47,7 @@ namespace IS3.Desktop
     public partial class ObjectView : UserControl
     {
         Dictionary<string, IEnumerable<DGObject>> _saved;
+        TabControl _tabControlSaved;
 
         public ObjectView()
         {
@@ -179,6 +180,13 @@ namespace IS3.Desktop
                         tabControl.Items.Add(item);
                         item.Content = chart;
                     }
+                    
+                    if (_tabControlSaved == null)
+                        tabControl.SelectedIndex = chartViewHolder.SelectedIndex;
+                    else
+                        tabControl.SelectedIndex = _tabControlSaved.SelectedIndex;
+                    _tabControlSaved = tabControl;  // save it to temporary var
+                    
                     Grid grid = new Grid();
                     grid.Children.Add(tabControl);
                     window.Content = grid;
