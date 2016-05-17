@@ -17,7 +17,9 @@ using System.IO;
 using System.Xml;
 using System.Reflection;
 
+using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
+using Microsoft.Win32;
 using IronPython.Hosting;
 
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -57,14 +59,74 @@ namespace IS3.Python
     public partial class IronPythonControl : UserControl
     {
         public event EventHandler ConsoleInitialized;
+        ConsoleOptions consoleOptionsProvider;
+        string currentFileName;
+
         public IronPythonControl()
         {
-            LoadHighlightDefinition();
+            // Load our custom highlighting definition:
+            IHighlightingDefinition pythonHighlighting;
+            using (Stream s = typeof(IronPythonControl).Assembly.GetManifestResourceStream("IS3.Python.Resources.Python.xshd"))
+            {
+                if (s == null)
+                    throw new InvalidOperationException("Could not find embedded resource");
+                using (XmlReader reader = new XmlTextReader(s))
+                {
+                    pythonHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd.
+                        HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                }
+            }
+            // and register it in the HighlightingManager
+            HighlightingManager.Instance.RegisterHighlighting("Python Highlighting", new string[] { ".cool" }, pythonHighlighting);
+
+//            LoadHighlightDefinition();
             InitializeComponent();
+
+            textEditor.SyntaxHighlighting = pythonHighlighting;
+            textEditor.PreviewKeyDown += new KeyEventHandler(textEditor_PreviewKeyDown);
+            consoleOptionsProvider = new ConsoleOptions(console.Pad);
+            propertyGridComboBox.SelectedIndex = 0;
+            expander.Expanded += new RoutedEventHandler(expander_Expanded);
 
             console.Host.ConsoleCreated += Host_ConsoleCreated;
             console.Pad.Control.WordWrap = true;
         }
+
+        void textEditor_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F5) RunStatements();
+        }
+
+        void RunStatements()
+        {
+            string statementsToRun = "";
+            if (textEditor.TextArea.Selection.Length > 0)
+                statementsToRun = textEditor.TextArea.Selection.GetText();
+            else
+                statementsToRun = textEditor.TextArea.Document.Text;
+            console.Pad.Console.RunStatements(statementsToRun);
+        }
+
+        void expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            propertyGridComboBoxSelectionChanged(sender, e);
+        }
+        void propertyGridComboBoxSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            if (propertyGrid == null)
+                return;
+            switch (propertyGridComboBox.SelectedIndex)
+            {
+                case 0:
+                    propertyGrid.SelectedObject = consoleOptionsProvider; // not .Instance
+                    break;
+                case 1:
+                    //propertyGrid.SelectedObject = textEditor.Options; (for WPF native control)
+                    propertyGrid.SelectedObject = textEditor.Options;
+                    break;
+            }
+        }
+
 
         void LoadHighlightDefinition()
         {
@@ -96,6 +158,16 @@ namespace IS3.Python
         {
             if (ConsoleInitialized != null)
                 ConsoleInitialized(sender, e);
+
+            string startupScipt = "import IronPythonConsole";
+            ScriptSource scriptSource = console.Pad.Console.ScriptScope.Engine.CreateScriptSourceFromString(startupScipt, SourceCodeKind.Statements);
+            try
+            {
+                scriptSource.Execute();
+            }
+            catch { }
+            //double[] test = new double[] { 1.2, 4.6 };
+            //console.Pad.Console.ScriptScope.SetVariable("test", test);
         }
 
         // Summary:
@@ -132,5 +204,42 @@ namespace IS3.Python
         {
             console.Console.RunStatements(statements);
         }
+
+        void openFileClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.CheckFileExists = true;
+            if (dlg.ShowDialog() ?? false)
+            {
+                currentFileName = dlg.FileName;
+                textEditor.Load(currentFileName);
+                //textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(currentFileName));
+            }
+        }
+
+        void saveFileClick(object sender, EventArgs e)
+        {
+            if (currentFileName == null)
+            {
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.DefaultExt = ".txt";
+                if (dlg.ShowDialog() ?? false)
+                {
+                    currentFileName = dlg.FileName;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            textEditor.Save(currentFileName);
+        }
+
+        void runClick(object sender, EventArgs e)
+        {
+            RunStatements();
+        }
+
+
     }
 }
