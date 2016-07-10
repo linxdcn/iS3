@@ -57,7 +57,7 @@ namespace IS3.Monitoring.Serialization
         {
             try
             {
-                ReadRawData(objs, tableNameSQL, orderSQL, conditionSQL);
+                ReadRawData_Partial(objs, tableNameSQL, orderSQL, conditionSQL);
                 _ReadMonPoints(objs, tableNameSQL, conditionSQL, orderSQL);
                 _ReadMonReadings(objs);
             }
