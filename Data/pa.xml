@@ -22,7 +22,7 @@
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜26点,测斜26数据"
                 OrderSQL="[Name],[time]"/>
-      <!--<MonPoint HasGeometry="true" Name="QS-38"
+      <MonPoint HasGeometry="true" Name="QS-38"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜38点,测斜38数据"
                 OrderSQL="[Name],[time]"/>
@@ -49,22 +49,22 @@
       <MonPoint HasGeometry="true" Name="QS-202"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜202点,测斜202数据"
-                OrderSQL="[Name],[time]"/>-->
+                OrderSQL="[Name],[time]"/>
       <MonGroup HasGeometry="true" Name="WallDeflectionGroup"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜组"
                 OrderSQL="[Name],[time]"/>
 
-      <!--<MonPoint HasGeometry="true" Name="HorDis_RetainingPile"
+      <MonPoint HasGeometry="true" Name="HorDis_RetainingPile"
                 GISLayerName="HorDis_RetainingPile"
                 TableNameSQL="支护桩水平位移测点,支护桩水平位移数据"
                 OrderSQL="[Name],[time]"/>
       <MonPoint HasGeometry="true" Name="Settl_RetainingPile"
                 GISLayerName="Settl_RetainingPile"
                 TableNameSQL="支护桩沉降点,支护桩沉降数据"
-                OrderSQL="[Name],[time]"/>-->
+                OrderSQL="[Name],[time]"/>
 
-      <!--<MonPoint HasGeometry="true" Name="Settl_Ground"
+      <MonPoint HasGeometry="true" Name="Settl_Ground"
                 GISLayerName="Settl_Ground"
                 TableNameSQL="地表沉降点,地表沉降数据"
                 OrderSQL="[Name],[time]"/>
@@ -85,7 +85,7 @@
       <MonGroup HasGeometry="true" Name="Soil_PressureGroup"
                 GISLayerName="SoilPressure"
                 TableNameSQL="土压力组"
-                OrderSQL="[Name],[time]"/>-->
+                OrderSQL="[Name],[time]"/>
       
 
     </ObjsDefinition>
