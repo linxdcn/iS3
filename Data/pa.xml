@@ -21,35 +21,43 @@
       <MonPoint HasGeometry="true" Name="QS-26"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜26点,测斜26数据"
+                ConditionSQL=",@Last(1000)"
                 OrderSQL="[Name],[time]"/>
-      <!--<MonPoint HasGeometry="true" Name="QS-38"
+      <MonPoint HasGeometry="true" Name="QS-38"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜38点,测斜38数据"
+                ConditionSQL=",@Last(1000)"
                 OrderSQL="[Name],[time]"/>
       <MonPoint HasGeometry="true" Name="QS-65"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜65点,测斜65数据"
+                ConditionSQL=",@Last(1000)"
                 OrderSQL="[Name],[time]"/>
       <MonPoint HasGeometry="true" Name="QS-83"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜83点,测斜83数据"
+                ConditionSQL=",@Last(1000)"
                 OrderSQL="[Name],[time]"/>
       <MonPoint HasGeometry="true" Name="QS-93"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜93点,测斜93数据"
+                ConditionSQL=",@Last(1000)"
                 OrderSQL="[Name],[time]"/>
       <MonPoint HasGeometry="true" Name="QS-99"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜99点,测斜99数据"
+                ConditionSQL=",@Last(1000)"
                 OrderSQL="[Name],[time]"/>
       <MonPoint HasGeometry="true" Name="QS-147"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜147点,测斜147数据"
+                ConditionSQL=",@Last(1000)"
                 OrderSQL="[Name],[time]"/>
       <MonPoint HasGeometry="true" Name="QS-202"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜202点,测斜202数据"
-                OrderSQL="[Name],[time]"/>-->
+                ConditionSQL=",@Last(1000)"
+                OrderSQL="[Name],[time]"/>
       <MonGroup HasGeometry="true" Name="WallDeflectionGroup"
                 GISLayerName="WallDeflection"
                 TableNameSQL="测斜组"

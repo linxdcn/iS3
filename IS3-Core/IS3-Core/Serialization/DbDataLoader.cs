@@ -313,6 +313,114 @@ namespace IS3.Core.Serialization
                 return "";
         }
 
+        // Get record count of a table
+        int getRecordCount(string tableNameSQL)
+        {
+            DbDataReader reader =
+                _dbContext.ExecuteCommand("SELECT COUNT(1) FROM " + tableNameSQL);
+            if (reader.HasRows && reader.FieldCount > 0)
+            {
+                object obj = reader[0];
+                int count = Convert.ToInt32(obj);
+                return count;
+            }
+            else
+                return 0;
+        }
+
+        string getSelectCmd(string tableNameSQL, string condition)
+        {
+            string cmd = "";
+            int index = condition.IndexOf("@UniformSampling");
+            if (index >= 0)
+            {
+                // SQL: select * from [table] where [id] mod N = 0
+                int begin = condition.IndexOf("(", index);
+                int end = condition.IndexOf(")", begin);
+                string sampleStr = condition.Substring(begin + 1, end - begin - 1);
+                int sample = int.Parse(sampleStr);
+
+                int count = getRecordCount(tableNameSQL);
+                int interval = count / sample;
+                if (interval == 0)
+                    interval = 1;
+
+                cmd = "SELECT * FROM [" + tableNameSQL + "] WHERE [ID] MOD " + interval.ToString() + " = 0";
+                return cmd;
+            }
+
+            index = condition.IndexOf("@Last");
+            if (index >= 0)
+            {
+                // SQL: select * from (select top N * from [table] order by [time] desc)
+                int begin = condition.IndexOf("(", index);
+                int end = condition.IndexOf(")", begin);
+                string sampleStr = condition.Substring(begin + 1, end - begin - 1);
+                int sample = int.Parse(sampleStr);
+
+                cmd = "SELECT * FROM (SELECT TOP " + sample.ToString() + " * FROM " + tableNameSQL + " ORDER BY [TIME] DESC)";
+                return cmd;
+            }
+
+            cmd = "SELECT * FROM " + tableNameSQL + "";
+            cmd += WhereSQL(null, condition);
+            return cmd;
+        }
+
+        public virtual bool ReadRawData_Partial(
+            DGObjects objs,
+            string tableNameSQL,
+            string orderSQL,
+            string conditionSQL)
+        {
+            // tableNameSQL,orderSQL,conditionSQL may contain
+            // multiple table names speratored by comma
+            string[] names = tableNameSQL.Split(_separator);
+            string[] orders = null;
+            string[] conditions = null;
+            if (orderSQL != null)
+                orders = orderSQL.Split(_separator);
+            if (conditionSQL != null)
+                conditions = conditionSQL.Split(_separator);
+
+            for (int i = 0; i < names.Count(); ++i)
+            {
+                string tableName = _dbContext.TableNamePrefix + names[i];
+                string strCmd = "";
+
+                if (conditions != null && i < conditions.Count())
+                {
+                    string cond = conditions[i];
+                    strCmd = getSelectCmd(tableName, cond);
+                }
+                else
+                    strCmd = "SELECT * FROM " + tableName + "";
+
+                if (orders != null && i < orders.Count())
+                    strCmd += OrderSQL(orders[i]);
+
+                DbDataAdapter adapter = _dbContext.GetDbDataAdapter(strCmd);
+                adapter.Fill(objs.rawDataSet, tableName);
+            }
+
+            // Add a field 'IsSelected' to the first DataTable, so we can 
+            // set and track the selection state of each row
+            if (objs.rawDataSet.Tables != null
+                && objs.rawDataSet.Tables.Count > 0)
+            {
+                DataTable dt = objs.rawDataSet.Tables[0];
+                DataColumn column = dt.Columns.Add("IsSelected", typeof(bool));
+                foreach (DataRow row in dt.Rows)
+                {
+                    row.SetField(column, false);
+                }
+
+            }
+
+            return true;
+        }
+
+
         protected char[] _separator = new char[] { ',' };
 
         // Summary:
