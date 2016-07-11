@@ -52,6 +52,9 @@ namespace IS3.Monitoring.Serialization
 
             return ReadMonPoints(objs, tableNameSQL, conditionSQL, null);
         }
+
+        // Summary:
+        //    Read monitoring points from the specified tables, using condition and order
         public bool ReadMonPoints(DGObjects objs, string tableNameSQL,
             string conditionSQL, string orderSQL)
         {
@@ -59,6 +62,29 @@ namespace IS3.Monitoring.Serialization
             {
                 ReadRawData_Partial(objs, tableNameSQL, orderSQL, conditionSQL);
                 _ReadMonPoints(objs, tableNameSQL, conditionSQL, orderSQL);
+                _ReadMonReadings(objs);
+            }
+            catch (DbException ex)
+            {
+                string str = ex.ToString();
+                ErrorReport.Report(str);
+                return false;
+            }
+            return true;
+        }
+
+        // Summary:
+        //    Re-read monitoring point from the specified tables.
+        //
+        public bool RereadMonPoints(DGObjects objs, string tableNameSQL,
+            string conditionSQL, string orderSQL)
+        {
+            try
+            {
+                // read raw data ingoring condition
+                ReadRawData_Partial(objs, tableNameSQL, orderSQL, conditionSQL);
+
+                // fill readings (note: objs are already exist)
                 _ReadMonReadings(objs);
             }
             catch (DbException ex)

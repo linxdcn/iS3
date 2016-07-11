@@ -409,7 +409,11 @@ namespace IS3.Core.Serialization
                 && objs.rawDataSet.Tables.Count > 0)
             {
                 DataTable dt = objs.rawDataSet.Tables[0];
-                DataColumn column = dt.Columns.Add("IsSelected", typeof(bool));
+                DataColumn column = null;
+                if (dt.Columns.Contains("IsSelected"))
+                    column = dt.Columns["IsSelected"];
+                else
+                    column = dt.Columns.Add("IsSelected", typeof(bool));
                 foreach (DataRow row in dt.Rows)
                 {
                     row.SetField(column, false);
@@ -474,7 +478,11 @@ namespace IS3.Core.Serialization
                 && objs.rawDataSet.Tables.Count > 0)
             {
                 DataTable dt = objs.rawDataSet.Tables[0];
-                DataColumn column = dt.Columns.Add("IsSelected", typeof(bool));
+                DataColumn column = null;
+                if (dt.Columns.Contains("IsSelected"))
+                    column = dt.Columns["IsSelected"];
+                else
+                    column = dt.Columns.Add("IsSelected", typeof(bool));
                 foreach (DataRow row in dt.Rows)
                 {
                     row.SetField(column, false);

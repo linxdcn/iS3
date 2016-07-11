@@ -5,6 +5,8 @@ using System.Windows.Media;
 using System.Collections.Generic;
 
 using IS3.Core;
+using IS3.Core.Serialization;
+using IS3.Monitoring.Serialization;
 
 namespace IS3.Monitoring
 {
@@ -158,6 +160,109 @@ namespace IS3.Monitoring
                     return level.WarningLevelIndex;
             }
             return -1;
+        }
+    }
+
+    public class MonitoringHelper
+    {
+        // Clear readings of DGObjects if each object is MonPoint
+        public void ClearReadings(DGObjects objs)
+        {
+            // clear objs rawData.Table[1] which is Readings
+            if (objs.rawDataSet.Tables.Count >= 1)
+                objs.rawDataSet.Tables[1].Clear();
+
+            // clear readings for every DGObject
+            foreach (DGObject obj in objs.values)
+            {
+                MonPoint monPoint = obj as MonPoint;
+                if (monPoint == null)
+                    continue;
+                monPoint.readingsDict.Clear();
+            }
+        }
+
+        // Clear readings of DGObjects by its name
+        public bool ClearReadings(string name)
+        {
+            if (Globals.project == null)
+                return false;
+            Domain domainMon = Globals.project.getDomain(DomainType.Monitoring);
+            if (domainMon == null)
+                return false;
+            DbContext dbContext = Globals.project.getDbContext();
+
+            DGObjects objs = domainMon.objsContainer[name];
+            ClearReadings(objs);
+            return true;
+        }
+
+        // Clear all readings
+        public bool ClearAllReadings()
+        {
+            if (Globals.project == null)
+                return false;
+            Domain domainMon = Globals.project.getDomain(DomainType.Monitoring);
+            if (domainMon == null)
+                return false;
+
+            foreach (var def in domainMon.objsDefinitions.Values)
+            {
+                if (def.Type == "MonPoint")
+                {
+                    DGObjects objs = domainMon.objsContainer[def.Name];
+                    ClearReadings(objs);
+                }
+            }
+            return true;
+        }
+
+        // Reload 
+        public bool ReloadObjs(DGObjects objs, DbContext dbContext,
+            string conditionSQL)
+        {
+            MonitoringDGObjectLoader loader =
+                new MonitoringDGObjectLoader(dbContext);
+            bool success = loader.ReloadMonPoints(objs, conditionSQL);
+            return success;
+        }
+
+        public bool Reload(string name, string conditionSQL = null)
+        {
+            if (Globals.project == null)
+                return false;
+            Domain domainMon = Globals.project.getDomain(DomainType.Monitoring);
+            if (domainMon == null)
+                return false;
+            DbContext dbContext = Globals.project.getDbContext();
+
+            DGObjects objs = domainMon.objsContainer[name];
+            ReloadObjs(objs, dbContext, conditionSQL);
+
+            return true;
+        }
+
+
+        public void ReloadAll(string conditionSQL = null)
+        {
+            if (Globals.project == null)
+                return;
+            Domain domainMon = Globals.project.getDomain(DomainType.Monitoring);
+            if (domainMon == null)
+                return;
+            DbContext dbContext = Globals.project.getDbContext();
+
+            foreach (var def in domainMon.objsDefinitions.Values)
+            {
+                if (def.Type == "MonPoint")
+                {
+                    DGObjects objs = domainMon.objsContainer[def.Name];
+                    Globals.mainframe.output("\nLoading " + objs.definition.Name + "...");
+                    ReloadObjs(objs, dbContext, conditionSQL);
+                }
+            }
+            Globals.mainframe.output("\nDone.\n");
+            Globals.mainframe.output("");
         }
     }
 }

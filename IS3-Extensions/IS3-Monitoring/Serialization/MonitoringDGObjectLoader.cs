@@ -53,6 +53,20 @@ namespace IS3.Monitoring.Serialization
             return success;
         }
 
+        // Summary:
+        //    Re-read monitoring point.
+        //    This is usually for loading all the monitoring records.
+        //
+        public bool ReloadMonPoints(DGObjects objs, string conditionSQL)
+        {
+            DGObjectsDefinition def = objs.definition;
+            if (def == null)
+                return false;
+            bool success = _dbLoader.RereadMonPoints(objs,
+                def.TableNameSQL, conditionSQL, def.OrderSQL);
+            return success;
+        }
+
         public bool LoadMonGroups(DGObjects objs)
         {
             DGObjectsDefinition def = objs.definition;

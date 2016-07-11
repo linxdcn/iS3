@@ -2,6 +2,6 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>\iS3\bin\IS3.Desktop.exe</StartProgram>
+    <StartProgram>d:\iS3\bin\IS3.Desktop.exe</StartProgram>
   </PropertyGroup>
 </Project>
