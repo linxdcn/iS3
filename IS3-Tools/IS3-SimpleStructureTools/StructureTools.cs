@@ -31,6 +31,7 @@ namespace IS3.SimpleStructureTools
         TunnelDepthAnalysisWindow tunnelDepthAnalysisWindow;
         TunnelCSLoadWindow tunnelCSLoadWindow;
         LSDynaDemo lsDynaDemo;
+        TSIWindow tsiWindow;
         TestWindow testWindow;
         public void drawTunnelAxes() { Init(drawTunnelAxesWindow); }
         public void drawTunnels() { Init(drawTunnelsWindow); }
@@ -39,6 +40,7 @@ namespace IS3.SimpleStructureTools
         public void tunnelCSLoad() { Init(tunnelCSLoadWindow); }
         public void lsDyna() { Init(lsDynaDemo); }
         public void test() { Init(testWindow); }
+        public void tsi() { Init(tsiWindow); }
         #endregion
 
         public void Init<T>(T window) where T : System.Windows.Window, new()
@@ -69,6 +71,10 @@ namespace IS3.SimpleStructureTools
             item = new ToolTreeItem("Structure|Spatial Analysis", "TunnelDepth", tunnelDepthAnalysis);
             items.Add(item);
             item = new ToolTreeItem("Structure|Load", "TunnelCSLoad", tunnelCSLoad);
+            items.Add(item);
+            item = new ToolTreeItem("FEM|Load", "Test", test);
+            items.Add(item);
+            item = new ToolTreeItem("Maintenance|TSI", "TSI", tsi);
             items.Add(item);
         }
     }

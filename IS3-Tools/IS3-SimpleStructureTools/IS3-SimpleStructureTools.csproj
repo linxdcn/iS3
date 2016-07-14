@@ -71,8 +71,32 @@
     <Compile Include="DrawTools\DrawTunnelsWindow.xaml.cs">
       <DependentUpon>DrawTunnelsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helper\Analysis\RingInfo.cs" />
+    <Compile Include="Helper\Analysis\TSIAnalysis.cs" />
+    <Compile Include="Helper\ColorTools\GradeColor.cs" />
+    <Compile Include="Helper\FEM\Ansys\AnsysOutput.cs" />
+    <Compile Include="Helper\FEM\Ansys\ElementOutput.cs" />
+    <Compile Include="Helper\FEM\Ansys\NodeOutput.cs" />
+    <Compile Include="Helper\FEM\Ansys\PartOutput.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Boundary.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Constrained.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Element.cs" />
+    <Compile Include="Helper\FEM\FEMModel\ElementType.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Load.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Mat.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Model.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Node.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Part.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Section.cs" />
+    <Compile Include="Helper\FEM\FEMModel\Set.cs" />
+    <Compile Include="Helper\FEM\ShieldTunnelLine3D\Configuration.cs" />
+    <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateElements.cs" />
+    <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateModel.cs" />
+    <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateNodes.cs" />
+    <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateParts.cs" />
     <Compile Include="Helper\File\PathHelper.cs" />
     <Compile Include="Helper\Mapping\StratumMappingUtility.cs" />
+    <Compile Include="Helper\MathTools\MathHelper.cs" />
     <Compile Include="Helper\ObjectTools\GeologyTools.cs" />
     <Compile Include="Helper\HelperFunction.cs" />
     <Compile Include="Helper\Mapping\ShieldTunnelMappingUtility.cs" />
@@ -101,6 +125,9 @@
       <DependentUpon>LSDynaDemo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helper\Mapping\TunnelMappingUtility.cs" />
+    <Compile Include="StructureAnalysis\TSIWindow.xaml.cs">
+      <DependentUpon>TSIWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StructureTools.cs" />
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
@@ -137,6 +164,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StructureAnalysis\LSDynaDemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StructureAnalysis\TSIWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
