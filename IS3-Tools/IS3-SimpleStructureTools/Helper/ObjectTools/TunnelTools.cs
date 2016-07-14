@@ -304,5 +304,21 @@ namespace IS3.SimpleStructureTools.Helper
             return m1;
         }
          */
+
+        public static List<SegmentLining> getSLsByLineNo(int lineNo)
+        {
+            List<SegmentLining> sls = new List<SegmentLining>();
+
+            Domain domain = Globals.project.getDomain(DomainType.Structure);
+            DGObjectsCollection allSLs = domain.getObjects("SegmentLining");
+            List<DGObject> allListSLs = allSLs.merge();
+            foreach(DGObject dg in allListSLs)
+            {
+                SegmentLining sl = dg as SegmentLining;
+                if (sl.LineNo == lineNo)
+                    sls.Add(sl);
+            }
+            return sls;
+        }
     }
 }
