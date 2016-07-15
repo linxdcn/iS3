@@ -121,6 +121,9 @@
     <Compile Include="SpatialTools\TunnelDepthAnalysisWindow.xaml.cs">
       <DependentUpon>TunnelDepthAnalysisWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StructureAnalysis\LoadStructureModelWindow.xaml.cs">
+      <DependentUpon>LoadStructureModelWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StructureAnalysis\LSDynaDemo.xaml.cs">
       <DependentUpon>LSDynaDemo.xaml</DependentUpon>
     </Compile>
@@ -160,6 +163,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SpatialTools\TunnelDepthAnalysisWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StructureAnalysis\LoadStructureModelWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

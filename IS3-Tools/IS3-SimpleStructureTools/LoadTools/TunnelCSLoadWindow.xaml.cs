@@ -512,6 +512,21 @@ namespace IS3.SimpleStructureTools.LoadTools
 
         void SyncToView()
         {
+            //save to analysis domain
+            string type = "CSLoad";
+            string name = "AllLCSLoads";
+
+            Domain analysisDomain = HelperFunction.GetAnalysisDomain();
+            DGObjectsCollection allLCSLoads = analysisDomain.getObjects(type);
+            if (allLCSLoads == null)
+            {
+                HelperFunction.NewObjsInAnalysisDomain(type, name);
+                allLCSLoads = analysisDomain.getObjects(type);
+            }
+
+            DGObjects loadDGObjects = HelperFunction.GetDGObjsByName(allLCSLoads, name);
+            loadDGObjects[_IniStress.name] = _IniStress;
+            
             // add graphic to the view
             IView view = InputViewCB.SelectedItem as IView;
             string layerID = "CSLoad";
