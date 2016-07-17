@@ -71,6 +71,7 @@
     <Compile Include="DrawTools\DrawTunnelsWindow.xaml.cs">
       <DependentUpon>DrawTunnelsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helper\Analysis\LoadStructure.cs" />
     <Compile Include="Helper\Analysis\RingInfo.cs" />
     <Compile Include="Helper\Analysis\TSIAnalysis.cs" />
     <Compile Include="Helper\ColorTools\GradeColor.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateNodes.cs" />
     <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateParts.cs" />
     <Compile Include="Helper\File\PathHelper.cs" />
+    <Compile Include="Helper\Format\FormatData.cs" />
     <Compile Include="Helper\Mapping\StratumMappingUtility.cs" />
     <Compile Include="Helper\MathTools\MathHelper.cs" />
     <Compile Include="Helper\ObjectTools\GeologyTools.cs" />

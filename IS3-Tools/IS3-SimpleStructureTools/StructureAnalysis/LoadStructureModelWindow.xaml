@@ -1,7 +1,7 @@
 ﻿<Window x:Class="IS3.SimpleStructureTools.StructureAnalysis.LoadStructureModelWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Ansys/LSDyna Demo" Height="420" Width="400"
+        Title="Load Structure" Height="420" Width="400"
         Topmost="True"
         ResizeMode="NoResize">
     <Grid x:Name="LayoutRoot" Background="White">

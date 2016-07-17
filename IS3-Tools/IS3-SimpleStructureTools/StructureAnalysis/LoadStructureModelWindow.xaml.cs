@@ -23,6 +23,7 @@ using IS3.SimpleStructureTools.Helper;
 using IS3.SimpleStructureTools.Helper.Analysis;
 using IS3.SimpleStructureTools.Helper.Mapping;
 using IS3.SimpleStructureTools.Helper.File;
+using IS3.SimpleStructureTools.Helper.Format;
 
 namespace IS3.SimpleStructureTools.StructureAnalysis
 {
@@ -37,9 +38,8 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
         Domain _geologyDomain;              // the geology domain of the project
         IMainFrame _mainFrame;              // the main frame
         IView _inputView;                   // the input view
-        IView _outputView;                  //the output view
         bool _initFailed;                   // set to true if initialization failed
-        String ansysPath;                   // path of ansys
+        String _ansysPath;                   // path of ansys
 
         //DGObject members
         DGObjectsCollection _allSLs;        // all the tunnels
@@ -48,12 +48,16 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
 
         //graphics members
         ISpatialReference _spatialRef;
-        ISymbol _fillSymbol;
+        ISymbol _whitefillSymbol;
         ISymbol _lineSymbol;
         ISymbol _arrowFillSymbol;
 
         //result
-        Dictionary<string, IGraphicCollection> _slsGraphics;       //result graphic
+        LoadStructure _loadStructure;
+        public Dictionary<int, IGraphicCollection> SLMomentGraphics { get; set; }
+        public Dictionary<int, IGraphicCollection> SLAxialGraphics { get; set; }
+        public Dictionary<int, IGraphicCollection> SLShearGraphics { get; set; }
+        public Dictionary<int, IGraphicCollection> SLDisplacementGraphics { get; set; }
 
         public LoadStructureModelWindow()
         {
@@ -61,13 +65,19 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
 
             ISimpleLineSymbol outline = Runtime.graphicEngine.newSimpleLineSymbol(
                                 Colors.Black, Core.Graphics.SimpleLineStyle.Solid, 1.0);
-            _fillSymbol = Runtime.graphicEngine.newSimpleFillSymbol(
-                                Colors.Cyan, SimpleFillStyle.Solid, outline);
+            _whitefillSymbol = Runtime.graphicEngine.newSimpleFillSymbol(
+                                Colors.White, SimpleFillStyle.Solid, outline);
             _lineSymbol = Runtime.graphicEngine.newSimpleLineSymbol(
                                 Colors.Blue, Core.Graphics.SimpleLineStyle.Solid, 1.0);
             _arrowFillSymbol = Runtime.graphicEngine.newSimpleFillSymbol(
                                 Colors.Blue, SimpleFillStyle.Solid, outline);
-            _slsGraphics = new Dictionary<string, IGraphicCollection>();
+
+            SLMomentGraphics = new Dictionary<int, IGraphicCollection>();
+            SLAxialGraphics = new Dictionary<int, IGraphicCollection>();
+            SLShearGraphics = new Dictionary<int, IGraphicCollection>();
+            SLDisplacementGraphics = new Dictionary<int, IGraphicCollection>();
+
+            _loadStructure = new LoadStructure();
 
             Loaded += LoadStructureModelWindow_Loaded;
             Unloaded += LoadStructureModelWindow_Unloaded;
@@ -87,7 +97,7 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             foreach (DGObjects objs in _allSLs)
                 _slLayerIDs.Add(objs.definition.GISLayerName);
 
-            ansysPath = Runtime.rootPath + "//Conf//ansysPath.xml";
+            _ansysPath = Runtime.rootPath + "//Conf//ansysPath.xml";
         }
 
         #region window interaction
@@ -127,9 +137,9 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
 
             // fill ansys path
             string path = "";
-            if (File.Exists(ansysPath))
+            if (File.Exists(_ansysPath))
             {
-                StreamReader sr = new System.IO.StreamReader(ansysPath);
+                StreamReader sr = new System.IO.StreamReader(_ansysPath);
                 XmlTextReader r = new XmlTextReader(sr);
                 while (r.Read())
                 {
@@ -259,11 +269,350 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-
+            StartAnalysis();
+            SyncToView();
+            Close();
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void StartAnalysis()
+        {
+            _loadStructure.radius = FormatData.ToNumber(tb_Radius.Text);
+            _loadStructure.thickness = FormatData.ToNumber(tb_Thickness.Text);
+            _loadStructure.width = FormatData.ToNumber(tb_Width.Text);
+            _loadStructure.density = FormatData.ToNumber(tb_Density.Text);
+            _loadStructure.moe = FormatData.ToNumber(tb_E.Text);
+            _loadStructure.pr = FormatData.ToNumber(tb_u.Text);
+            _loadStructure.k_ground = FormatData.ToNumber(tb_kground.Text);
+            _loadStructure.k_joint = FormatData.ToNumber(tb_kjoint.Text);
+            _loadStructure.pv = FormatData.ToNumber(tb_VerticalLoad.Text);
+            _loadStructure.ph1 = FormatData.ToNumber(tb_HorizontalLoad1.Text);
+            _loadStructure.ph2 = FormatData.ToNumber(tb_HorizontalLoad2.Text);
+            _loadStructure.strResult = LoadStructure.createCode(_loadStructure);
+
+            string path = "D:/SLConvergenceAnalysis";
+            System.IO.Directory.CreateDirectory(path);
+
+            DirectoryInfo dir = new DirectoryInfo(path);
+            dir.Create();
+
+            DirectoryInfo dir2 = new DirectoryInfo(path);
+            dir2.CreateSubdirectory("Result");
+
+            if (!File.Exists("D:/SLConvergenceAnalysis/input.txt"))
+            {
+                FileStream fs1 = new FileStream("D:/SLConvergenceAnalysis/input.txt", FileMode.Create, FileAccess.Write);
+                StreamWriter sw = new StreamWriter(fs1);
+                sw.WriteLine(_loadStructure.strResult);
+                sw.Close();
+                fs1.Close();
+            }
+            else
+            {
+                FileStream fs = new FileStream("D:/SLConvergenceAnalysis/input.txt", FileMode.Open, FileAccess.Write);
+                StreamWriter sr = new StreamWriter(fs);
+                sr.WriteLine(_loadStructure.strResult);//开始写入值
+                sr.Close();
+                fs.Close();
+            }
+
+            //start analysis
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            string inputfile, outputfile;
+            inputfile = "D:/SLConvergenceAnalysis/input.txt";
+            outputfile = "D:/SLConvergenceAnalysis/output.txt";
+            proc.StartInfo.FileName = TB_Path.Text;
+            proc.StartInfo.Arguments = "-b -p ansysds -i " + inputfile + " -o " + outputfile;
+            proc.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+            proc.StartInfo.WorkingDirectory = "D:/SLConvergenceAnalysis/Result";
+            proc.Start();
+            proc.WaitForExit();
+
+            //read data
+            List<LoadStructure.NodeResult> listNode = new List<LoadStructure.NodeResult>();
+
+            StreamReader reader = new System.IO.StreamReader("D:/SLConvergenceAnalysis/Result/result.txt");
+            string ss;
+            int i = 1;
+            while ((ss = reader.ReadLine()) != null)
+            {
+                LoadStructure.NodeResult node = new LoadStructure.NodeResult();
+                ss = FormatData.SpaceToComma(ss);
+                string[] arr = ss.Split(',');
+                node.n = i;
+                node.x = double.Parse(arr[0]);
+                node.y = double.Parse(arr[1]);
+                node.moment = double.Parse(arr[2]);
+                node.axial = double.Parse(arr[3]);
+                node.shear = double.Parse(arr[4]);
+                listNode.Add(node);
+                i++;
+            }
+
+            _loadStructure.Result = listNode;
+            Draw(_loadStructure);
+        }
+
+        private void Draw(LoadStructure loadStructure)
+        {
+            SegmentLining sl = SLLB.SelectedItem as SegmentLining;
+            IView view = InputViewCB.SelectedItem as IView;
+            _spatialRef = view.spatialReference;
+
+            int num = _loadStructure.Result.Count();
+
+            //draw moment, axial force, shear force result
+            double moment_max = _loadStructure.Result[0].moment;
+            double moment_min = _loadStructure.Result[0].moment;
+            double axial_max = _loadStructure.Result[0].axial;
+            double axial_min = _loadStructure.Result[0].axial;
+            double shear_max = _loadStructure.Result[0].shear;
+            double shear_min = _loadStructure.Result[0].shear;
+            foreach (LoadStructure.NodeResult nr in _loadStructure.Result)
+            {
+                if (nr.moment > moment_max)
+                    moment_max = nr.moment;
+                if (nr.moment < moment_min)
+                    moment_min = nr.moment;
+
+                if (nr.axial > axial_max)
+                    axial_max = nr.axial;
+                if (nr.axial < axial_min)
+                    axial_min = nr.axial;
+
+                if (nr.shear > shear_max)
+                    shear_max = nr.shear;
+                if (nr.shear < shear_min)
+                    shear_min = nr.shear;
+            }
+
+            //get radius
+            double zScale = view.eMap.ScaleZ;
+            SLType slType = TunnelTools.getSLType(sl.SLTypeID);
+            if (slType == null)
+                return;
+            double r = slType.OuterDiameter / 2;
+
+            //get x,y position
+            double x = 0;
+            double z = 0;
+
+            Domain domain = HelperFunction.GetAnalysisDomain();
+            DGObjectsCollection segGraphics = domain.getObjects("CSGraphic");
+            if (segGraphics == null || segGraphics.merge().Count == 0)
+                segGraphics = domain.getObjects("LSGraphic");
+            if (segGraphics != null && segGraphics.merge().Count != 0)
+            {
+                SegmentGraphicBase segGraphic = segGraphics[sl.id.ToString() + view.eMap.MapID] as SegmentGraphicBase;
+                x = segGraphic.CenterX;
+                z = segGraphic.CenterZ;
+            }
+            else
+            {
+                foreach (string SLLayerID in _selectedSLsDict.Keys)
+                {
+                    IEnumerable<DGObject> sls = _selectedSLsDict[SLLayerID];
+                    List<DGObject> slList = sls.ToList();
+                    IGraphicsLayer gLayer = _inputView.getLayer(SLLayerID);
+
+                    IGraphicCollection gcollection = gLayer.getGraphics(sl);
+                    if (gcollection != null && gcollection.Count != 0)
+                    {
+                        IGraphic g = gcollection[0];
+                        IPolygon polygon = g.Geometry as IPolygon;
+                        IPointCollection pointCollection = polygon.GetPoints();
+                        IMapPoint p1_temp = pointCollection[0];
+                        IMapPoint p2_temp = pointCollection[1];
+                        IMapPoint p3_temp = pointCollection[2];
+                        IMapPoint p4_temp = pointCollection[3];
+                        x = (p1_temp.X + p2_temp.X + p3_temp.X + p4_temp.X) / 4;
+                        z = (p1_temp.Y + p2_temp.Y + p3_temp.Y + p4_temp.Y) / 4;
+                        break;
+                    }
+                }
+            }
+
+            //start to draw
+            IGraphicCollection gm = Runtime.graphicEngine.newGraphicCollection();
+            IGraphicCollection ga = Runtime.graphicEngine.newGraphicCollection();
+            IGraphicCollection gs = Runtime.graphicEngine.newGraphicCollection();
+            IGraphicCollection gd = Runtime.graphicEngine.newGraphicCollection();
+
+            DrawValueTable(x, z, r, moment_max, moment_min, gm);
+            DrawValueTable(x, z, r, axial_max, axial_min, ga);
+            DrawValueTable(x, z, r, shear_max, shear_min, gs);
+
+            foreach (LoadStructure.NodeResult nr in _loadStructure.Result)
+            {
+                DrawForce(x, z, r, num, nr.n, nr.moment, moment_max, moment_min, gm);
+                DrawForce(x, z, r, num, nr.n, nr.axial, axial_max, axial_min, ga);
+                DrawForce(x, z, r, num, nr.n, nr.shear, shear_max, shear_min, gs);
+            }
+
+            //draw displacement
+            DrawDisplacement(x, z, r, _loadStructure, gd);
+
+            SLMomentGraphics[sl.id] = gm;
+            SLAxialGraphics[sl.id] = ga;
+            SLShearGraphics[sl.id] = gs;
+            SLDisplacementGraphics[sl.id] = gd;
+        }
+
+        private void DrawForce(double x, double z, double r, int num, int n, double value, double max, double min, IGraphicCollection resultGraphic)
+        {
+            double m;
+            double pi = 3.14159;
+            if (Math.Abs(max) > Math.Abs(min))
+                m = Math.Abs(max);
+            else
+                m = Math.Abs(min);
+            Graphic g = new Graphic();
+
+            double x1 = x - Math.Sin(2 * pi * (n - 1) / num) * r;
+            double y1 = z + Math.Cos(2 * pi * (n - 1) / num) * r;
+            double x2 = x - Math.Sin(2 * pi * n / num) * r;
+            double y2 = z + Math.Cos(2 * pi * n / num) * r;
+            double x3 = x - Math.Sin(2 * pi * n / num) * (r + 0.25 * r * value / m);
+            double y3 = z + Math.Cos(2 * pi * n / num) * (r + 0.25 * r * value / m);
+            double x4 = x - Math.Sin(2 * pi * (n - 1) / num) * (r + 0.25 * r * value / m);
+            double y4 = z + Math.Cos(2 * pi * (n - 1) / num) * (r + 0.25 * r * value / m);
+
+            MapPoint p1 = new MapPoint(x1, y1);
+            MapPoint p2 = new MapPoint(x2, y2);
+            MapPoint p3 = new MapPoint(x3, y3);
+            MapPoint p4 = new MapPoint(x4, y4);
+
+            SimpleFillSymbol lineSymbol = new SimpleFillSymbol();
+            lineSymbol.Fill = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+            lineSymbol.BorderThickness = 1;
+            g = ArcGISMappingUtility.NewLine(p1, p2);
+            g.Symbol = lineSymbol;
+            _Graphics.Add(g);
+            resultGraphic.Add(g);
+
+            SimpleFillSymbol fillSymbol = new SimpleFillSymbol();
+            fillSymbol.Fill = new SolidColorBrush(GetColor(max, min, value));
+            fillSymbol.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+            g = ArcGISMappingUtility.NewQuadrilateral(p1, p2, p3, p4);
+            g.Symbol = fillSymbol;
+            _Graphics.Add(g);
+            resultGraphic.Add(g);
+        }
+
+        private void DrawDisplacement(double x, double z, double r, LoadStructure slConvergence, IGraphicCollection resultGraphic)
+        {
+            double max_x = 0;
+            double max_z = 0;
+            double pi = 3.13159;
+            double m = 0;
+            double num = slConvergence.Result.Count();
+
+            foreach (SLConvergence.NodeResult nr in slConvergence.Result)
+            {
+                if (Math.Abs(nr.x) > max_x)
+                    max_x = Math.Abs(nr.x);
+                if (Math.Abs(nr.y) > max_z)
+                    max_z = Math.Abs(nr.y);
+            }
+
+            if (max_x > max_z)
+                m = max_x;
+            else
+                m = max_z;
+            Graphic g = new Graphic();
+            SimpleFillSymbol lineSymbol = new SimpleFillSymbol();
+            lineSymbol.Fill = new SolidColorBrush(Colors.Transparent);
+            g = ArcGISMappingUtility.NewCircle(x, z, r);
+            g.Symbol = lineSymbol;
+            _Graphics.Add(g);
+            resultGraphic.Add(g);
+
+            ESRI.ArcGIS.Client.Geometry.PointCollection pc = new ESRI.ArcGIS.Client.Geometry.PointCollection();
+            foreach (SLConvergence.NodeResult nr in slConvergence.Result)
+            {
+                double x1 = x - Math.Sin(2 * pi * (nr.n - 1) / num) * r + nr.x * 0.1 * r / m;
+                double y1 = z + Math.Cos(2 * pi * (nr.n - 1) / num) * r + nr.y * 0.1 * r / m;
+
+                MapPoint p1 = new MapPoint(x1, y1);
+                pc.Add(p1);
+            }
+            double xf = x - Math.Sin(2 * pi * (slConvergence.Result[0].n - 1) / num) * r + slConvergence.Result[0].x * 0.1 * r / m;
+            double yf = z + Math.Cos(2 * pi * (slConvergence.Result[0].n - 1) / num) * r + slConvergence.Result[0].y * 0.1 * r / m;
+            MapPoint first = new MapPoint(xf, yf);
+            pc.Add(first);
+
+            SimpleFillSymbol lineSymbol2 = new SimpleFillSymbol();
+            lineSymbol2.BorderBrush = new SolidColorBrush(Colors.Blue);
+            g = ArcGISMappingUtility.NewPolyline(pc);
+            g.Symbol = lineSymbol2;
+            _Graphics.Add(g);
+            resultGraphic.Add(g);
+
+            Graphic text = new Graphic();
+            for (int i = 1; i < 5; i++)
+            {
+                int n = i * 90;
+                SLConvergence.NodeResult nr = slConvergence.Result[n - 1];
+                double x1 = x - Math.Sin(2 * pi * (nr.n - 1) / num) * r;
+                double y1 = z + Math.Cos(2 * pi * (nr.n - 1) / num) * r;
+
+                text = ArcGISMappingUtility.NewText(string.Format("x:{0:0.00000000},y:{1:0.00000000}", nr.x, nr.y), new MapPoint(x1, y1), Colors.Red, "Arial", 12);
+                _Graphics.Add(text);
+                resultGraphic.Add(text);
+            }
+
+        }
+
+        private void DrawValueTable(double x, double z, double r, double max, double min, IGraphicCollection resultGraphic)
+        {
+            double n = (max - min) / 9.0;
+            double dis = 3 * r / 9.0;
+            double x_start = x - 1.5 * r;
+            double y_start = z - 1.3 * r;
+
+            IGraphic c = Runtime.graphicEngine.newGraphic();
+            c = ArcGISMappingUtility.NewCircle(x, z, r);
+            c.Symbol = whitefillSymbol;
+            _Graphics.Add(c);
+            resultGraphic.Add(c);
+
+            for (int i = 1; i < 10; i++)
+            {
+                double value = min + n * i;
+
+                double left = x_start + dis * (i - 1);
+                double bottom = y_start;
+                double right = x_start + dis * i;
+                double top = y_start + 0.07 * r;
+                Graphic g = new Graphic();
+                SimpleFillSymbol fillSymbol = new SimpleFillSymbol();
+                fillSymbol.Fill = new SolidColorBrush(GetColor(max, min, value));
+                fillSymbol.BorderBrush = new SolidColorBrush(Colors.White);
+                g = ArcGISMappingUtility.NewRectangle(left, top, right, bottom);
+                g.Symbol = fillSymbol;
+                _Graphics.Add(g);
+                resultGraphic.Add(g);
+            }
+
+            double middle = (max + min) / 2.0;
+            Graphic text = new Graphic();
+            text = ArcGISMappingUtility.NewText(string.Format("{0:0.00}", min), new MapPoint(x - 1.5 * r, z - 1.24 * r), Colors.White, "Arial", 12);
+            _Graphics.Add(text);
+            resultGraphic.Add(text);
+            text = ArcGISMappingUtility.NewText(string.Format("{0:0.00}", middle), new MapPoint(x - 0.1 * r, z - 1.24 * r), Colors.White, "Arial", 12);
+            _Graphics.Add(text);
+            resultGraphic.Add(text);
+            text = ArcGISMappingUtility.NewText(string.Format("{0:0.00}", max), new MapPoint(x + 1.2 * r, z - 1.24 * r), Colors.White, "Arial", 12);
+            _Graphics.Add(text);
+            resultGraphic.Add(text);
+        }
+
+        private void SyncToView()
+        {
+
         }
     }
 }
