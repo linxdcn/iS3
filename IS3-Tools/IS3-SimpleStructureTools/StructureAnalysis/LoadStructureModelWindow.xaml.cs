@@ -24,6 +24,7 @@ using IS3.SimpleStructureTools.Helper.Analysis;
 using IS3.SimpleStructureTools.Helper.Mapping;
 using IS3.SimpleStructureTools.Helper.File;
 using IS3.SimpleStructureTools.Helper.Format;
+using IS3.SimpleStructureTools.Helper.ColorTools;
 
 namespace IS3.SimpleStructureTools.StructureAnalysis
 {
@@ -68,7 +69,7 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             _whitefillSymbol = Runtime.graphicEngine.newSimpleFillSymbol(
                                 Colors.White, SimpleFillStyle.Solid, outline);
             _lineSymbol = Runtime.graphicEngine.newSimpleLineSymbol(
-                                Colors.Blue, Core.Graphics.SimpleLineStyle.Solid, 1.0);
+                                Color.FromArgb(255, 0, 0, 0), Core.Graphics.SimpleLineStyle.Solid, 1.0);
             _arrowFillSymbol = Runtime.graphicEngine.newSimpleFillSymbol(
                                 Colors.Blue, SimpleFillStyle.Solid, outline);
 
@@ -469,7 +470,7 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 m = Math.Abs(max);
             else
                 m = Math.Abs(min);
-            Graphic g = new Graphic();
+            IGraphic g;
 
             double x1 = x - Math.Sin(2 * pi * (n - 1) / num) * r;
             double y1 = z + Math.Cos(2 * pi * (n - 1) / num) * r;
@@ -480,37 +481,33 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             double x4 = x - Math.Sin(2 * pi * (n - 1) / num) * (r + 0.25 * r * value / m);
             double y4 = z + Math.Cos(2 * pi * (n - 1) / num) * (r + 0.25 * r * value / m);
 
-            MapPoint p1 = new MapPoint(x1, y1);
-            MapPoint p2 = new MapPoint(x2, y2);
-            MapPoint p3 = new MapPoint(x3, y3);
-            MapPoint p4 = new MapPoint(x4, y4);
+            IMapPoint p1 = Runtime.geometryEngine.newMapPoint(x1, y1, _spatialRef);
+            IMapPoint p2 = Runtime.geometryEngine.newMapPoint(x2, y2, _spatialRef);
+            IMapPoint p3 = Runtime.geometryEngine.newMapPoint(x3, y3, _spatialRef);
+            IMapPoint p4 = Runtime.geometryEngine.newMapPoint(x4, y4, _spatialRef);
 
-            SimpleFillSymbol lineSymbol = new SimpleFillSymbol();
-            lineSymbol.Fill = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
-            lineSymbol.BorderThickness = 1;
-            g = ArcGISMappingUtility.NewLine(p1, p2);
-            g.Symbol = lineSymbol;
-            _Graphics.Add(g);
+            g = ShapeMappingUtility.NewLine(p1, p2);
+            g.Symbol = _lineSymbol;
             resultGraphic.Add(g);
 
-            SimpleFillSymbol fillSymbol = new SimpleFillSymbol();
-            fillSymbol.Fill = new SolidColorBrush(GetColor(max, min, value));
-            fillSymbol.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-            g = ArcGISMappingUtility.NewQuadrilateral(p1, p2, p3, p4);
+            ISimpleLineSymbol outline = Runtime.graphicEngine.newSimpleLineSymbol(
+                                Color.FromArgb(255, 255, 255, 255), Core.Graphics.SimpleLineStyle.Solid, 1.0);
+            ISimpleFillSymbol fillSymbol = Runtime.graphicEngine.newSimpleFillSymbol(
+                                GradeColor.GetFEMColor(max, min, value), SimpleFillStyle.Solid, outline);
+            g = ShapeMappingUtility.NewQuadrilateral(p1, p2, p3, p4);
             g.Symbol = fillSymbol;
-            _Graphics.Add(g);
             resultGraphic.Add(g);
         }
 
-        private void DrawDisplacement(double x, double z, double r, LoadStructure slConvergence, IGraphicCollection resultGraphic)
+        private void DrawDisplacement(double x, double z, double r, LoadStructure loadStructure, IGraphicCollection resultGraphic)
         {
             double max_x = 0;
             double max_z = 0;
             double pi = 3.13159;
             double m = 0;
-            double num = slConvergence.Result.Count();
+            double num = loadStructure.Result.Count();
 
-            foreach (SLConvergence.NodeResult nr in slConvergence.Result)
+            foreach (LoadStructure.NodeResult nr in loadStructure.Result)
             {
                 if (Math.Abs(nr.x) > max_x)
                     max_x = Math.Abs(nr.x);
@@ -522,45 +519,41 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 m = max_x;
             else
                 m = max_z;
-            Graphic g = new Graphic();
-            SimpleFillSymbol lineSymbol = new SimpleFillSymbol();
-            lineSymbol.Fill = new SolidColorBrush(Colors.Transparent);
-            g = ArcGISMappingUtility.NewCircle(x, z, r);
+            IGraphic g;
+            ISymbol lineSymbol = Runtime.graphicEngine.newSimpleLineSymbol(Colors.Transparent, SimpleLineStyle.Solid, 1.0);
+            g = ShapeMappingUtility.NewCircle(x, z, r, _spatialRef);
             g.Symbol = lineSymbol;
-            _Graphics.Add(g);
             resultGraphic.Add(g);
 
-            ESRI.ArcGIS.Client.Geometry.PointCollection pc = new ESRI.ArcGIS.Client.Geometry.PointCollection();
-            foreach (SLConvergence.NodeResult nr in slConvergence.Result)
+            IPointCollection pc = Runtime.geometryEngine.newPointCollection();
+            foreach (LoadStructure.NodeResult nr in loadStructure.Result)
             {
                 double x1 = x - Math.Sin(2 * pi * (nr.n - 1) / num) * r + nr.x * 0.1 * r / m;
                 double y1 = z + Math.Cos(2 * pi * (nr.n - 1) / num) * r + nr.y * 0.1 * r / m;
 
-                MapPoint p1 = new MapPoint(x1, y1);
+                IMapPoint p1 = Runtime.geometryEngine.newMapPoint(x1, y1, _spatialRef);
                 pc.Add(p1);
             }
-            double xf = x - Math.Sin(2 * pi * (slConvergence.Result[0].n - 1) / num) * r + slConvergence.Result[0].x * 0.1 * r / m;
-            double yf = z + Math.Cos(2 * pi * (slConvergence.Result[0].n - 1) / num) * r + slConvergence.Result[0].y * 0.1 * r / m;
-            MapPoint first = new MapPoint(xf, yf);
+            double xf = x - Math.Sin(2 * pi * (loadStructure.Result[0].n - 1) / num) * r + loadStructure.Result[0].x * 0.1 * r / m;
+            double yf = z + Math.Cos(2 * pi * (loadStructure.Result[0].n - 1) / num) * r + loadStructure.Result[0].y * 0.1 * r / m;
+            IMapPoint first = Runtime.geometryEngine.newMapPoint(xf, yf, _spatialRef);
             pc.Add(first);
 
-            SimpleFillSymbol lineSymbol2 = new SimpleFillSymbol();
-            lineSymbol2.BorderBrush = new SolidColorBrush(Colors.Blue);
-            g = ArcGISMappingUtility.NewPolyline(pc);
+            ISymbol lineSymbol2 = Runtime.graphicEngine.newSimpleLineSymbol(Colors.Blue, SimpleLineStyle.Solid, 1.0);
+            g = ShapeMappingUtility.NewPolyline(pc);
             g.Symbol = lineSymbol2;
-            _Graphics.Add(g);
             resultGraphic.Add(g);
 
-            Graphic text = new Graphic();
+            IGraphic text;
             for (int i = 1; i < 5; i++)
             {
                 int n = i * 90;
-                SLConvergence.NodeResult nr = slConvergence.Result[n - 1];
+                LoadStructure.NodeResult nr = loadStructure.Result[n - 1];
                 double x1 = x - Math.Sin(2 * pi * (nr.n - 1) / num) * r;
                 double y1 = z + Math.Cos(2 * pi * (nr.n - 1) / num) * r;
 
-                text = ArcGISMappingUtility.NewText(string.Format("x:{0:0.00000000},y:{1:0.00000000}", nr.x, nr.y), new MapPoint(x1, y1), Colors.Red, "Arial", 12);
-                _Graphics.Add(text);
+                IMapPoint p = Runtime.geometryEngine.newMapPoint(x1, y1, _spatialRef);
+                text = Runtime.graphicEngine.newText(string.Format("x:{0:0.00000000},y:{1:0.00000000}", nr.x, nr.y), p, Colors.Red, "Arial", 12);
                 resultGraphic.Add(text);
             }
 
@@ -574,9 +567,8 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             double y_start = z - 1.3 * r;
 
             IGraphic c = Runtime.graphicEngine.newGraphic();
-            c = ArcGISMappingUtility.NewCircle(x, z, r);
-            c.Symbol = whitefillSymbol;
-            _Graphics.Add(c);
+            c = ShapeMappingUtility.NewCircle(x, z, r, _spatialRef);
+            c.Symbol = _whitefillSymbol;
             resultGraphic.Add(c);
 
             for (int i = 1; i < 10; i++)
@@ -587,32 +579,100 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 double bottom = y_start;
                 double right = x_start + dis * i;
                 double top = y_start + 0.07 * r;
-                Graphic g = new Graphic();
-                SimpleFillSymbol fillSymbol = new SimpleFillSymbol();
-                fillSymbol.Fill = new SolidColorBrush(GetColor(max, min, value));
-                fillSymbol.BorderBrush = new SolidColorBrush(Colors.White);
-                g = ArcGISMappingUtility.NewRectangle(left, top, right, bottom);
+                IGraphic g;
+                ISimpleLineSymbol outline = Runtime.graphicEngine.newSimpleLineSymbol(
+                                Colors.White, Core.Graphics.SimpleLineStyle.Solid, 1.0);
+                ISimpleFillSymbol fillSymbol = Runtime.graphicEngine.newSimpleFillSymbol(
+                                    GradeColor.GetFEMColor(max, min, value), SimpleFillStyle.Solid, outline);
+                g = ShapeMappingUtility.NewRectangle(left, top, right, bottom, _spatialRef);
                 g.Symbol = fillSymbol;
-                _Graphics.Add(g);
                 resultGraphic.Add(g);
             }
 
             double middle = (max + min) / 2.0;
-            Graphic text = new Graphic();
-            text = ArcGISMappingUtility.NewText(string.Format("{0:0.00}", min), new MapPoint(x - 1.5 * r, z - 1.24 * r), Colors.White, "Arial", 12);
-            _Graphics.Add(text);
+            IGraphic text;
+            text = Runtime.graphicEngine.newText(string.Format("{0:0.00}", min), 
+                Runtime.geometryEngine.newMapPoint(x - 1.5 * r, z - 1.24 * r, _spatialRef), Colors.White, "Arial", 12);
             resultGraphic.Add(text);
-            text = ArcGISMappingUtility.NewText(string.Format("{0:0.00}", middle), new MapPoint(x - 0.1 * r, z - 1.24 * r), Colors.White, "Arial", 12);
-            _Graphics.Add(text);
+            text = Runtime.graphicEngine.newText(string.Format("{0:0.00}", middle),
+                Runtime.geometryEngine.newMapPoint(x - 0.1 * r, z - 1.24 * r, _spatialRef), Colors.White, "Arial", 12);
             resultGraphic.Add(text);
-            text = ArcGISMappingUtility.NewText(string.Format("{0:0.00}", max), new MapPoint(x + 1.2 * r, z - 1.24 * r), Colors.White, "Arial", 12);
-            _Graphics.Add(text);
+            text = Runtime.graphicEngine.newText(string.Format("{0:0.00}", max),
+                Runtime.geometryEngine.newMapPoint(x + 1.2 * r, z - 1.24 * r, _spatialRef), Colors.White, "Arial", 12);
             resultGraphic.Add(text);
         }
 
         private void SyncToView()
         {
+            IView view = InputViewCB.SelectedItem as IView;
 
+            foreach (IGraphicsLayer layer in view.layers)
+                layer.IsVisible = false;
+
+            //add graphics to view
+            string layerID = "MomentLayer";
+            IGraphicsLayer gLayer = getLayer(view, layerID);
+            foreach (int id in SLMomentGraphics.Keys)
+            {
+                IGraphicCollection gc = SLMomentGraphics[id];
+                gLayer.addGraphics(gc);
+            }
+
+            layerID = "ShearLayer";
+            gLayer = getLayer(view, layerID);
+            foreach (int id in SLShearGraphics.Keys)
+            {
+                IGraphicCollection gc = SLShearGraphics[id];
+                gLayer.addGraphics(gc);
+            }
+            gLayer.IsVisible = false;
+
+            layerID = "AxiaForceLayer";
+            gLayer = getLayer(view, layerID);
+            foreach (int id in SLAxialGraphics.Keys)
+            {
+                IGraphicCollection gc = SLAxialGraphics[id];
+                gLayer.addGraphics(gc);
+            }
+            gLayer.IsVisible = false;
+
+            layerID = "DisplacementLayer";
+            gLayer = getLayer(view, layerID);
+            foreach (int id in SLDisplacementGraphics.Keys)
+            {
+                IGraphicCollection gc = SLDisplacementGraphics[id];
+                gLayer.addGraphics(gc);
+            }
+            gLayer.IsVisible = false;
+
+            //calculate the envelope
+            IEnvelope ext = null;
+            foreach (IGraphicCollection gc in SLMomentGraphics.Values)
+            {
+                IEnvelope itemExt = GraphicsUtil.GetGraphicsEnvelope(gc);
+                if (ext == null)
+                    ext = itemExt;
+                else
+                    ext = ext.Union(itemExt);
+            }
+            _mainFrame.activeView = view;
+            view.zoomTo(ext);
+        }
+
+        IGraphicsLayer getLayer(IView view, string layerID)
+        {
+            IGraphicsLayer gLayer = view.getLayer(layerID);
+            if (gLayer == null)
+            {
+                gLayer = Runtime.graphicEngine.newGraphicsLayer(
+                    layerID, layerID);
+                var sym_fill = GraphicsUtil.GetDefaultFillSymbol();
+                var renderer = Runtime.graphicEngine.newSimpleRenderer(sym_fill);
+                gLayer.setRenderer(renderer);
+                gLayer.Opacity = 0.9;
+                view.addLayer(gLayer);
+            }
+            return gLayer;
         }
     }
 }

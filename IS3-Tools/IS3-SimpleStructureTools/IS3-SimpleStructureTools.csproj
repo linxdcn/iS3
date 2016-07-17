@@ -97,6 +97,7 @@
     <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateParts.cs" />
     <Compile Include="Helper\File\PathHelper.cs" />
     <Compile Include="Helper\Format\FormatData.cs" />
+    <Compile Include="Helper\Mapping\ShapeMappingUtility.cs" />
     <Compile Include="Helper\Mapping\StratumMappingUtility.cs" />
     <Compile Include="Helper\MathTools\MathHelper.cs" />
     <Compile Include="Helper\ObjectTools\GeologyTools.cs" />
