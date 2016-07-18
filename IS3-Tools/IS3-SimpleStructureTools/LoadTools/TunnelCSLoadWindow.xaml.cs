@@ -296,26 +296,63 @@ namespace IS3.SimpleStructureTools.LoadTools
             _IniStress.D = slType.OuterDiameter;
             _IniStress.Thickness = slType.Width;
 
+            double CenterX = 0;
+            double CenterZ = 0;
+
             // get water table and soil top data
             Domain domain = HelperFunction.GetAnalysisDomain();
             DGObjectsCollection segGraphics = domain.getObjects("CSGraphic");
-            if (segGraphics.merge().Count == 0)
+            if (segGraphics == null || segGraphics.merge().Count == 0)
                 segGraphics = domain.getObjects("LSGraphic");
-            SegmentGraphicBase segGraphic = segGraphics[sl.id.ToString() + view.eMap.MapID] as SegmentGraphicBase;
-            double? top = StratumMappingUtility.StratumTop(segGraphic.CenterX, view, "GEO_STR");
+            if (segGraphics != null && segGraphics.merge().Count != 0)
+            {
+                SegmentGraphicBase segGraphic = segGraphics[sl.id.ToString() + view.eMap.MapID] as SegmentGraphicBase;
+                CenterX = segGraphic.CenterX;
+                CenterZ = segGraphic.CenterZ;
+            }
+            else
+            {
+                foreach (string SLLayerID in _selectedSLsDict.Keys)
+                {
+                    //获取衬砌选中列表
+                    IEnumerable<DGObject> sls = _selectedSLsDict[SLLayerID];
+                    List<DGObject> slList = sls.ToList();
+                    IGraphicsLayer gLayer = _inputView.getLayer(SLLayerID);
+
+                    IGraphicCollection gcollection = gLayer.getGraphics(sl);
+                    if (gcollection != null && gcollection.Count != 0)
+                    {
+                        IGraphic g = gcollection[0];
+                        IPolygon polygon = g.Geometry as IPolygon;
+                        IPointCollection pointCollection = polygon.GetPoints();
+                        IMapPoint p1_temp = pointCollection[0];
+                        IMapPoint p2_temp = pointCollection[1];
+                        IMapPoint p3_temp = pointCollection[2];
+                        IMapPoint p4_temp = pointCollection[3];
+                        CenterX = (p1_temp.X + p2_temp.X + p3_temp.X + p4_temp.X) / 4;
+                        CenterZ = (p1_temp.Y + p2_temp.Y + p3_temp.Y + p4_temp.Y) / 4;
+                        break;
+                    }           
+                }
+            }
+
+            if (CenterX == 0 || CenterZ == 0)
+                return;
+
+            double? top = StratumMappingUtility.StratumTop(CenterX, view, "GEO_STR");
             if (top == null)
             {
                 return;
             }
             _IniStress.SoilTop = top.Value;
-            _IniStress.TunnelTop = segGraphic.CenterZ + _IniStress.D / 2.0;
+            _IniStress.TunnelTop = CenterZ + _IniStress.D / 2.0;
 
             // get soil parameters : take the bottom of the tunnel to compute soil profile
             StratumMappingUtility.Setting setting = new StratumMappingUtility.Setting();
             setting.AllStrata = false;
             List<StratumMappingUtility.Result> strataResults =
-                StratumMappingUtility.StrataOnTunnel(segGraphic.CenterX,
-                segGraphic.CenterZ - _IniStress.D / 2.0,
+                StratumMappingUtility.StrataOnTunnel(CenterX,
+                CenterZ - _IniStress.D / 2.0,
                 0, view, "GEO_STR", setting);
 
             List<SoilInitalStress.IStratum> strata = new List<SoilInitalStress.IStratum>();
@@ -357,7 +394,7 @@ namespace IS3.SimpleStructureTools.LoadTools
             _IniStress.result = rIS;
             _IniStress.name = sl.ToString() + view.eMap.MapID;
             _IniStress.id = sl.id;
-            GenerateGraphics(sl, segGraphic.CenterX, segGraphic.CenterZ, rIS);
+            GenerateGraphics(sl, CenterX, CenterZ, rIS);
         }
 
         void GenerateGraphics(SegmentLining sl, double centerX, double centerZ, SoilInitalStress.IResult rIS)
@@ -384,15 +421,15 @@ namespace IS3.SimpleStructureTools.LoadTools
             y2 = y + zScale * radius;
 
             IGraphicCollection graphicResult = Runtime.graphicEngine.newGraphicCollection();
-            IGraphicCollection gc = GraphicsUtil.DistributedLoad_Vertical(x1, x2, x3, y1, y2,
-                _fillSymbol,_arrowFillSymbol,_lineSymbol);
+            IGraphicCollection gc = ShieldTunnelMappingUtility.DistributedLoad_Vertical(x1, x2, x3, y1, y2,
+                _fillSymbol,_arrowFillSymbol,_lineSymbol, _spatialRef);
             foreach (IGraphic g in gc)
             {
                 graphicResult.Add(g);
             }
 
-            gc = GraphicsUtil.DistributedLoad_Vertical(x4, x5, x6, y1, y2,
-                _fillSymbol, _arrowFillSymbol, _lineSymbol);
+            gc = ShieldTunnelMappingUtility.DistributedLoad_Vertical(x4, x5, x6, y1, y2,
+                _fillSymbol, _arrowFillSymbol, _lineSymbol, _spatialRef);
             foreach (IGraphic g in gc)
             {
                 graphicResult.Add(g);
@@ -406,8 +443,8 @@ namespace IS3.SimpleStructureTools.LoadTools
             x5 = x4 + (rIS.Qw1 / max) * len;
             x6 = x4 + (rIS.Qw2 / max) * len;
 
-            gc = GraphicsUtil.DistributedLoad_Vertical(x1, x2, x3, y1, y2,
-                _fillSymbol, _arrowFillSymbol, _lineSymbol);
+            gc = ShieldTunnelMappingUtility.DistributedLoad_Vertical(x1, x2, x3, y1, y2,
+                _fillSymbol, _arrowFillSymbol, _lineSymbol, _spatialRef);
             foreach (IGraphic g in gc)
             {
                 graphicResult.Add(g);
@@ -421,8 +458,8 @@ namespace IS3.SimpleStructureTools.LoadTools
             gText = Runtime.graphicEngine.newText(str, p, Colors.Blue, "Arial", 14.0);
             graphicResult.Add(gText);
 
-            gc = GraphicsUtil.DistributedLoad_Vertical(x4, x5, x6, y1, y2,
-                _fillSymbol, _arrowFillSymbol, _lineSymbol);
+            gc = ShieldTunnelMappingUtility.DistributedLoad_Vertical(x4, x5, x6, y1, y2,
+                _fillSymbol, _arrowFillSymbol, _lineSymbol, _spatialRef);
             foreach (IGraphic g in gc)
             {
                 graphicResult.Add(g);
@@ -446,8 +483,8 @@ namespace IS3.SimpleStructureTools.LoadTools
             y5 = y4 + gap;
             y6 = y5 + (rIS.Pw1 / max) * len;
 
-            gc = GraphicsUtil.DistributedLoad_Horizontal(x1, x2, y1, y2, y2,
-                _fillSymbol, _arrowFillSymbol, _lineSymbol);
+            gc = ShieldTunnelMappingUtility.DistributedLoad_Horizontal(x1, x2, y1, y2, y2,
+                _fillSymbol, _arrowFillSymbol, _lineSymbol, _spatialRef);
             foreach (IGraphic g in gc)
             {
                 graphicResult.Add(g);
@@ -457,8 +494,8 @@ namespace IS3.SimpleStructureTools.LoadTools
             gText = Runtime.graphicEngine.newText(str, p, Colors.Blue, "Arial", 14.0);
             graphicResult.Add(gText);
 
-            gc = GraphicsUtil.DistributedLoad_Horizontal(x1, x2, y3, y4, y4,
-                _fillSymbol, _arrowFillSymbol, _lineSymbol);
+            gc = ShieldTunnelMappingUtility.DistributedLoad_Horizontal(x1, x2, y3, y4, y4,
+                _fillSymbol, _arrowFillSymbol, _lineSymbol, _spatialRef);
             foreach (IGraphic g in gc)
             {
                 graphicResult.Add(g);
@@ -468,8 +505,8 @@ namespace IS3.SimpleStructureTools.LoadTools
             gText = Runtime.graphicEngine.newText(str, p, Colors.Blue, "Arial", 14.0);
             graphicResult.Add(gText);
 
-            gc = GraphicsUtil.DistributedLoad_Horizontal(x1, x2, y5, y6, y6,
-                _fillSymbol, _arrowFillSymbol, _lineSymbol);
+            gc = ShieldTunnelMappingUtility.DistributedLoad_Horizontal(x1, x2, y5, y6, y6,
+                _fillSymbol, _arrowFillSymbol, _lineSymbol, _spatialRef);
             foreach (IGraphic g in gc)
             {
                 graphicResult.Add(g);
@@ -485,8 +522,8 @@ namespace IS3.SimpleStructureTools.LoadTools
             y3 = y2 - gap;
             y4 = y3 - (rIS.Pw2 / max) * len;
 
-            gc = GraphicsUtil.DistributedLoad_Horizontal(x1, x2, y1, y2, y2,
-                _fillSymbol, _arrowFillSymbol, _lineSymbol);
+            gc = ShieldTunnelMappingUtility.DistributedLoad_Horizontal(x1, x2, y1, y2, y2,
+                _fillSymbol, _arrowFillSymbol, _lineSymbol, _spatialRef);
             foreach (IGraphic g in gc)
             {
                 graphicResult.Add(g);
@@ -496,8 +533,8 @@ namespace IS3.SimpleStructureTools.LoadTools
             gText = Runtime.graphicEngine.newText(str, p, Colors.Blue, "Arial", 14.0);
             graphicResult.Add(gText);
 
-            gc = GraphicsUtil.DistributedLoad_Horizontal(x1, x2, y3, y4, y4,
-                _fillSymbol, _arrowFillSymbol, _lineSymbol);
+            gc = ShieldTunnelMappingUtility.DistributedLoad_Horizontal(x1, x2, y3, y4, y4,
+                _fillSymbol, _arrowFillSymbol, _lineSymbol, _spatialRef);
             foreach (IGraphic g in gc)
             {
                 graphicResult.Add(g);
@@ -512,6 +549,21 @@ namespace IS3.SimpleStructureTools.LoadTools
 
         void SyncToView()
         {
+            //save to analysis domain
+            string type = "CSLoad";
+            string name = "AllLCSLoads";
+
+            Domain analysisDomain = HelperFunction.GetAnalysisDomain();
+            DGObjectsCollection allLCSLoads = analysisDomain.getObjects(type);
+            if (allLCSLoads == null)
+            {
+                HelperFunction.NewObjsInAnalysisDomain(type, name);
+                allLCSLoads = analysisDomain.getObjects(type);
+            }
+
+            DGObjects loadDGObjects = HelperFunction.GetDGObjsByName(allLCSLoads, name);
+            loadDGObjects[_IniStress.name] = _IniStress;
+            
             // add graphic to the view
             IView view = InputViewCB.SelectedItem as IView;
             string layerID = "CSLoad";

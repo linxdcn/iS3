@@ -24,6 +24,7 @@ def addBaseMap():
 def addCrossMap():
     emap = is3.EngineeringMap('CRProfileMap',
                                13523000, 3664000, 13525000, 3680000, 0.1)
+    emap.MapType = is3.EngineeringMapType.GeneralProfileMap;
     emap.LocalTileFileName1 = 'cross_tunnel_profile_map.tpk'
     emap.LocalGeoDbFileName = 'cross_tunnel_profile_map.geodatabase'
     viewWP = is3.MainframeWrapper.addView(emap)
@@ -32,6 +33,7 @@ def addCrossMap():
 def addLonMap():
     emap = is3.EngineeringMap('LTProfileMap',
                               13521600, 3662850, 13524300, 3663350, 0.1)
+    emap.MapType = is3.EngineeringMapType.GeneralProfileMap;
     emap.LocalTileFileName1 = 'Empty.tpk'
     emap.LocalGeoDbFileName = 'longitudinal_tunnel_profile_map.geodatabase'
     viewWP = is3.MainframeWrapper.addView(emap)
