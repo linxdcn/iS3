@@ -137,5 +137,124 @@ namespace IS3.SimpleStructureTools.Helper
 
             return pc;
         }
+
+        #region for cross section load mapping
+        // Draw vertical distributed load
+        // Note: y1<y2, (x1,y1)-(x1,y2) is a vertical line, (x3,y1)-(x2,y2) is a oblique line
+        //
+        public static IGraphicCollection DistributedLoad_Vertical(double x1, double x2, double x3, double y1, double y2,
+            ISymbol backgroundFillSymbol, ISymbol arrowFillSymbol, ISymbol lineSymbol, ISpatialReference spatialRef)
+        {
+            IGraphicCollection gc = Runtime.graphicEngine.newGraphicCollection();
+
+            IMapPoint p1 = Runtime.geometryEngine.newMapPoint(x1, y1, spatialRef);
+            IMapPoint p2 = Runtime.geometryEngine.newMapPoint(x1, y2, spatialRef);
+            IMapPoint p3 = Runtime.geometryEngine.newMapPoint(x2, y2, spatialRef);
+            IMapPoint p4 = Runtime.geometryEngine.newMapPoint(x3, y1, spatialRef);
+            IGraphic g = Runtime.graphicEngine.newQuadrilateral(p1, p2, p3, p4);
+            g.Symbol = backgroundFillSymbol;
+            gc.Add(g);
+
+            IPointCollection pc = Runtime.geometryEngine.newPointCollection();
+            pc.Add(p1);
+            pc.Add(p2);
+            pc.Add(p3);
+            pc.Add(p4);
+            pc.Add(p1);
+            g = Runtime.graphicEngine.newPolyline(pc);
+            g.Symbol = lineSymbol;
+            gc.Add(g);
+
+            double x00, x01, y00;
+            for (int i = 0; i <= 10; ++i)
+            {
+                x00 = x1;
+                x01 = x2 + i * (x3 - x2) / 10.0;
+                y00 = y2 - i * (y2 - y1) / 10.0;
+                IMapPoint p00 = Runtime.geometryEngine.newMapPoint(x00, y00, spatialRef);
+                IMapPoint p01 = Runtime.geometryEngine.newMapPoint(x01, y00, spatialRef);
+                g = Runtime.graphicEngine.newLine(p00, p01);
+                g.Symbol = lineSymbol;
+                gc.Add(g);
+
+                pc = VectorArrowPoints(x2, y00, p00, spatialRef);
+                g = Runtime.graphicEngine.newPolygon(pc);
+                g.Symbol = arrowFillSymbol;
+                gc.Add(g);
+            }
+            return gc;
+        }
+
+        // Draw horizontal distributed load
+        // Note: x1<x2, (x1,y1)-(x2,y1) is a horizontal line, (x1,y2)-(x2,y3) is a oblique line
+        //
+        public static IGraphicCollection DistributedLoad_Horizontal(double x1, double x2, double y1, double y2, double y3,
+            ISymbol backgroundFillSymbol, ISymbol arrowFillSymbol, ISymbol lineSymbol, ISpatialReference spatialRef)
+        {
+            IGraphicCollection gc = Runtime.graphicEngine.newGraphicCollection();
+
+            IMapPoint p1 = Runtime.geometryEngine.newMapPoint(x1, y1, spatialRef);
+            IMapPoint p2 = Runtime.geometryEngine.newMapPoint(x1, y2, spatialRef);
+            IMapPoint p3 = Runtime.geometryEngine.newMapPoint(x2, y3, spatialRef);
+            IMapPoint p4 = Runtime.geometryEngine.newMapPoint(x2, y1, spatialRef);
+            IGraphic g = Runtime.graphicEngine.newQuadrilateral(p1, p2, p3, p4);
+            g.Symbol = backgroundFillSymbol;
+            gc.Add(g);
+
+            IPointCollection pc = Runtime.geometryEngine.newPointCollection();
+            pc.Add(p1);
+            pc.Add(p2);
+            pc.Add(p3);
+            pc.Add(p4);
+            pc.Add(p1);
+            g = Runtime.graphicEngine.newPolyline(pc);
+            g.Symbol = lineSymbol;
+            gc.Add(g);
+
+            double x00, y00, y01;
+            for (int i = 0; i <= 10; ++i)
+            {
+                x00 = x1 + i * (x2 - x1) / 10.0;
+                y00 = y1;
+                y01 = y2 + i * (y3 - y2) / 10.0;
+                IMapPoint p00 = Runtime.geometryEngine.newMapPoint(x00, y00, spatialRef);
+                IMapPoint p01 = Runtime.geometryEngine.newMapPoint(x00, y01, spatialRef);
+                g = Runtime.graphicEngine.newLine(p00, p01);
+                g.Symbol = lineSymbol;
+                gc.Add(g);
+
+                pc = VectorArrowPoints(x00, y2, p00, spatialRef);
+                g = Runtime.graphicEngine.newPolygon(pc);
+                g.Symbol = arrowFillSymbol;
+                gc.Add(g);
+            }
+            return gc;
+        }
+
+        public static IPointCollection VectorArrowPoints(double beginPntX, double beginPntY, IMapPoint endPnt, ISpatialReference spatialRef)
+        {
+            double x = beginPntX - endPnt.X;
+            double y = beginPntY - endPnt.Y;
+            double angle = Math.Atan2(y, x);
+
+            double alpha = Math.PI / 6;                         // arrow is 30 degree by each side of original line
+            double length = Math.Sqrt(x * x + y * y) * 0.25;      // arrow is a quarter of original length 
+
+            double x1 = endPnt.X + length * Math.Cos(angle + alpha);
+            double y1 = endPnt.Y + length * Math.Sin(angle + alpha);
+            double x2 = endPnt.X + length * Math.Cos(angle - alpha);
+            double y2 = endPnt.Y + length * Math.Sin(angle - alpha);
+
+            IMapPoint p1 = Runtime.geometryEngine.newMapPoint(x1, y1, spatialRef);
+            IMapPoint p2 = Runtime.geometryEngine.newMapPoint(x2, y2, spatialRef);
+
+            IPointCollection pc = Runtime.geometryEngine.newPointCollection();
+            pc.Add(p1);
+            pc.Add(endPnt);
+            pc.Add(p2);
+
+            return pc;
+        }
+        #endregion
     }
 }
