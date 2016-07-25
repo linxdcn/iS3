@@ -244,6 +244,16 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             tb_HorizontalLoad1.Text = horizontalLoad1.ToString() + " KPa";
             tb_HorizontalLoad2.Text = horizontalLoad2.ToString() + " KPa";
         }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            //updata the line list box
+            if (RB1.IsChecked.Value)
+                BrowserBtn.IsEnabled = false;
+            else
+                BrowserBtn.IsEnabled = true;
+        }
+
         #endregion
 
         private void Path_Click(object sender, RoutedEventArgs e)
@@ -320,17 +330,25 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 fs.Close();
             }
 
+            if (RB1.IsChecked.Value)
+            {
+
+            }
+            else
+            {
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                string inputfile, outputfile;
+                inputfile = "D:/SLConvergenceAnalysis/input.txt";
+                outputfile = "D:/SLConvergenceAnalysis/output.txt";
+                proc.StartInfo.FileName = TB_Path.Text;
+                proc.StartInfo.Arguments = "-b -p ansysds -i " + inputfile + " -o " + outputfile;
+                proc.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                proc.StartInfo.WorkingDirectory = "D:/SLConvergenceAnalysis/Result";
+                proc.Start();
+                proc.WaitForExit();
+            }
             //start analysis
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            string inputfile, outputfile;
-            inputfile = "D:/SLConvergenceAnalysis/input.txt";
-            outputfile = "D:/SLConvergenceAnalysis/output.txt";
-            proc.StartInfo.FileName = TB_Path.Text;
-            proc.StartInfo.Arguments = "-b -p ansysds -i " + inputfile + " -o " + outputfile;
-            proc.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-            proc.StartInfo.WorkingDirectory = "D:/SLConvergenceAnalysis/Result";
-            proc.Start();
-            proc.WaitForExit();
+            
 
             //read data
             List<LoadStructure.NodeResult> listNode = new List<LoadStructure.NodeResult>();

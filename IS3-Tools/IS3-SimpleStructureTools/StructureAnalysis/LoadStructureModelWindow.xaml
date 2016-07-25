@@ -23,10 +23,16 @@
                     <ListBox x:Name="SLLB" Margin="0,5,5,0"
                              DisplayMemberPath="name" SelectionChanged="SLLB_SelectionChanged"
                              Height="100"/>
-                    <TextBlock Text="Ansys application path:" Margin="0,5,5,0"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Ansys Path: " Margin="0,5,5,0"/>
+                        <RadioButton x:Name="RB1" GroupName="RBGroup" Margin="0,5,5,0"
+                             Content="Remote" IsChecked="True" Checked="RadioButton_Checked"/>
+                        <RadioButton x:Name="RB2" GroupName="RBGroup" Margin="0,5,5,0"
+                             Content="Local" Checked="RadioButton_Checked"/>
+                    </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,5,5,0">
                         <TextBox x:Name="TB_Path" Width="220" IsReadOnly="True" Margin="0,5,15,0" />
-                        <Button Content="Browser" Width="80" Height="20" Margin="0,5,5,0" Click="Path_Click"/>
+                        <Button x:Name="BrowserBtn" Content="Browser" Width="80" Height="20" Margin="0,5,5,0" Click="Path_Click"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="0,5,5,0" Grid.Row="1">
                         <TextBlock Text="Analysis parameter:" Margin="0,5,5,5" Foreground="Red" FontWeight="Bold"/>
