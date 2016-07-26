@@ -32,7 +32,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,5,5,0">
                         <TextBox x:Name="TB_Path" Width="220" IsReadOnly="True" Margin="0,5,15,0" />
-                        <Button x:Name="BrowserBtn" Content="Browser" Width="80" Height="20" Margin="0,5,5,0" Click="Path_Click"/>
+                        <Button x:Name="BrowserBtn" Content="Browser" Width="80" Height="20" IsEnabled="False" Margin="0,5,5,0" Click="Path_Click"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="0,5,5,0" Grid.Row="1">
                         <TextBlock Text="Analysis parameter:" Margin="0,5,5,5" Foreground="Red" FontWeight="Bold"/>

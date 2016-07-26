@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Xml;
 
+
 using IS3.Core;
 using IS3.Core.Geometry;
 using IS3.Core.Graphics;
@@ -105,7 +106,7 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
         void LoadStructureModelWindow_Loaded(object sender,
             RoutedEventArgs e)
         {
-            Application curApp = Application.Current;
+            System.Windows.Application curApp = System.Windows.Application.Current;
             Window mainWindow = curApp.MainWindow;
             this.Owner = mainWindow;
 
@@ -248,10 +249,13 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             //updata the line list box
-            if (RB1.IsChecked.Value)
-                BrowserBtn.IsEnabled = false;
-            else
-                BrowserBtn.IsEnabled = true;
+            if (BrowserBtn != null)
+            {
+                if (RB1.IsChecked.Value)
+                    BrowserBtn.IsEnabled = false;
+                else
+                    BrowserBtn.IsEnabled = true;
+            }      
         }
 
         #endregion
@@ -280,8 +284,16 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            StartAnalysis();
-            SyncToView();
+            string message = "It may take some time to conduct this analysis. Plase wait patient after submit the requirement. Do you want to continue?";
+            MessageBoxResult mbr = System.Windows.MessageBox.Show(message, "Warning", MessageBoxButton.OKCancel);
+            if (mbr == MessageBoxResult.OK)
+            {
+                start();
+            }
+            else if (mbr == MessageBoxResult.Cancel)
+            {
+
+            }
             Close();
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -289,7 +301,12 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             Close();
         }
 
-        private void StartAnalysis()
+        private async void start()
+        {
+            await StartAnalysis();
+            SyncToView();
+        }
+        private async Task StartAnalysis()
         {
             _loadStructure.radius = FormatData.ToNumber(tb_Radius.Text);
             _loadStructure.thickness = FormatData.ToNumber(tb_Thickness.Text);
@@ -332,28 +349,17 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
 
             if (RB1.IsChecked.Value)
             {
-
+                await CallAnsys.CalllRemoteAsync("D:/SLConvergenceAnalysis/input.txt", "D:/SLConvergenceAnalysis");
             }
             else
             {
-                System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                string inputfile, outputfile;
-                inputfile = "D:/SLConvergenceAnalysis/input.txt";
-                outputfile = "D:/SLConvergenceAnalysis/output.txt";
-                proc.StartInfo.FileName = TB_Path.Text;
-                proc.StartInfo.Arguments = "-b -p ansysds -i " + inputfile + " -o " + outputfile;
-                proc.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-                proc.StartInfo.WorkingDirectory = "D:/SLConvergenceAnalysis/Result";
-                proc.Start();
-                proc.WaitForExit();
-            }
-            //start analysis
-            
+                await CallAnsys.CalllLocalAsync(TB_Path.Text, "D:/SLConvergenceAnalysis/input.txt", "D:/SLConvergenceAnalysis");
+            }           
 
             //read data
             List<LoadStructure.NodeResult> listNode = new List<LoadStructure.NodeResult>();
 
-            StreamReader reader = new System.IO.StreamReader("D:/SLConvergenceAnalysis/Result/result.txt");
+            StreamReader reader = new System.IO.StreamReader("D:/SLConvergenceAnalysis/result.txt");
             string ss;
             int i = 1;
             while ((ss = reader.ReadLine()) != null)
@@ -364,12 +370,13 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 node.n = i;
                 node.x = double.Parse(arr[0]);
                 node.y = double.Parse(arr[1]);
-                node.moment = double.Parse(arr[2]);
-                node.axial = double.Parse(arr[3]);
-                node.shear = double.Parse(arr[4]);
+                node.moment = double.Parse(arr[3]);
+                node.axial = double.Parse(arr[4]);
+                node.shear = double.Parse(arr[5]);
                 listNode.Add(node);
                 i++;
             }
+            reader.Close();
 
             _loadStructure.Result = listNode;
             Draw(_loadStructure);
