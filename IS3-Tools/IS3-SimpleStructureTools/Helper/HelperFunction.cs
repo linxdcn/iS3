@@ -134,6 +134,9 @@ namespace IS3.SimpleStructureTools.Helper
 
         public static DGObjects GetDGObjsByName(DGObjectsCollection dgObjsColl, string name)
         {
+            if (dgObjsColl == null)
+                return null;
+            
             DGObjects dgObjs = null;
             foreach (DGObjects objs in dgObjsColl)
             {

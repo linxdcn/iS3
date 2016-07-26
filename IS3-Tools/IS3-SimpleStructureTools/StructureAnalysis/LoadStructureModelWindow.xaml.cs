@@ -212,6 +212,10 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
         private void SLLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             IView view = InputViewCB.SelectedItem as IView;
+
+            if (SLLB.Items == null || SLLB.Items.Count == 0)
+                return;
+
             SegmentLining sl = SLLB.SelectedItem as SegmentLining;
             SLType slType = TunnelTools.getSLType(sl.SLTypeID);
             if (slType == null)
@@ -224,6 +228,10 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             Domain analysisDomain = HelperFunction.GetAnalysisDomain();
             DGObjectsCollection allLCSLoads = analysisDomain.getObjects("CSLoad");
             DGObjects loadDGObjects = HelperFunction.GetDGObjsByName(allLCSLoads, "AllLCSLoads");
+
+            if (loadDGObjects == null)
+                return;
+
             string name = sl.ToString() + view.eMap.MapID;
             if (loadDGObjects.containsKey(name))
             {
@@ -232,6 +240,9 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 horizontalLoad1 = sis.result.Qe1 + sis.result.Qw1;
                 horizontalLoad2 = sis.result.Qe2 + sis.result.Qw2;
             }
+
+            if (verticalLoad == 0 || horizontalLoad1 == 0 || horizontalLoad2 == 0)
+                return;
 
             tb_Radius.Text = r.ToString() + " m";
             tb_Thickness.Text = slType.Thickness.ToString() + " m";
@@ -308,6 +319,9 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
         }
         private async Task StartAnalysis()
         {
+            if (tb_VerticalLoad.Text == "" || tb_HorizontalLoad1.Text == "" || tb_HorizontalLoad2.Text == "")
+                return;
+            
             _loadStructure.radius = FormatData.ToNumber(tb_Radius.Text);
             _loadStructure.thickness = FormatData.ToNumber(tb_Thickness.Text);
             _loadStructure.width = FormatData.ToNumber(tb_Width.Text);
@@ -321,39 +335,22 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             _loadStructure.ph2 = FormatData.ToNumber(tb_HorizontalLoad2.Text);
             _loadStructure.strResult = LoadStructure.createCode(_loadStructure);
 
-            string path = "D:/SLConvergenceAnalysis";
+            string path = Runtime.rootPath + "/bin/ansys/" + DateTime.Now.ToString("yyyyMMddHHmmss");
             System.IO.Directory.CreateDirectory(path);
-
-            DirectoryInfo dir = new DirectoryInfo(path);
-            dir.Create();
-
-            DirectoryInfo dir2 = new DirectoryInfo(path);
-            dir2.CreateSubdirectory("Result");
-
-            if (!File.Exists("D:/SLConvergenceAnalysis/input.txt"))
-            {
-                FileStream fs1 = new FileStream("D:/SLConvergenceAnalysis/input.txt", FileMode.Create, FileAccess.Write);
-                StreamWriter sw = new StreamWriter(fs1);
-                sw.WriteLine(_loadStructure.strResult);
-                sw.Close();
-                fs1.Close();
-            }
-            else
-            {
-                FileStream fs = new FileStream("D:/SLConvergenceAnalysis/input.txt", FileMode.Open, FileAccess.Write);
-                StreamWriter sr = new StreamWriter(fs);
-                sr.WriteLine(_loadStructure.strResult);//开始写入值
-                sr.Close();
-                fs.Close();
-            }
+            string inputFilePath = path + "/input.txt";
+            FileStream fs1 = new FileStream( inputFilePath, FileMode.OpenOrCreate, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(fs1);
+            sw.WriteLine(_loadStructure.strResult);
+            sw.Close();
+            fs1.Close();
 
             if (RB1.IsChecked.Value)
             {
-                await CallAnsys.CalllRemoteAsync("D:/SLConvergenceAnalysis/input.txt", "D:/SLConvergenceAnalysis");
+                await CallAnsys.CalllRemoteAsync(inputFilePath, path);
             }
             else
             {
-                await CallAnsys.CalllLocalAsync(TB_Path.Text, "D:/SLConvergenceAnalysis/input.txt", "D:/SLConvergenceAnalysis");
+                await CallAnsys.CalllLocalAsync(TB_Path.Text, inputFilePath, path);
             }           
 
             //read data
