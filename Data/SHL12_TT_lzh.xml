@@ -1,0 +1,223 @@
+﻿<Project>
+  <is3:ProjectDefinition xmlns="http://schemas.microsoft.com/client/2007"
+                        xmlns:is3="clr-namespace:IS3.Core;assembly=IS3.Core"
+                        xmlns:g="clr-namespace:IS3.Core.Graphics;assembly=IS3.Core"
+                        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                        GeometryServiceUrl="http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
+                        ID="SHL12-TT"
+                        ProjectTitle="Shanghai Metro Line No.12"
+                        LocalDatabaseName="SH_MetroL12_lzh.mdb"
+                        DefaultMapID="BaseMap">
+    <is3:ProjectDefinition.SubProjectInfos>
+      <is3:ShieldTunnelProjectInformation ID="BoredTunnel"
+                             ProjectType="ShieldTunnel"
+                             Length="1450"
+                             OuterDiameter="6.2"
+                             InnerDiamter="5.5"/>
+    </is3:ProjectDefinition.SubProjectInfos>
+    <is3:ProjectDefinition.EngineeringMaps>
+      
+    </is3:ProjectDefinition.EngineeringMaps>
+  </is3:ProjectDefinition>
+
+  <Domain Name="Geology" Type="Geology">
+    <ObjsDefinition>
+      <Borehole HasGeometry="true" Name="Allboreholes" GISLayerName="GEO_BHL"
+                TableNameSQL="Boreholes,BoreholeStrataInfo" OrderSQL="[Name]"/>
+      <Stratum HasGeometry="true" Name="AllStratum" GISLayerName="GEO_STR"
+                TableNameSQL="Strata" />
+      <StratumSection Name="AllStratumSections" TableNameSQL="StrataSection" />
+      <SoilProperty Name="AllSoilProperties" TableNameSQL="SoilProperties"/>
+      <PhreaticWater Name="AllPhreaticWaters" TableNameSQL="PhreaticWater"/>
+      <ConfinedWater Name="AllConfinedWaters" TableNameSQL="ConfinedWater"/>
+      <WaterProperty Name="AllWaterProperties" TableNameSQL="WaterProperties"/>
+    
+    </ObjsDefinition>
+    <TreeDefinition>
+      <Geology  DisplayName="Geology" Desc="See geology report for complete information.">
+        <EngineeringGeology DisplayName="Engineering Geology" Desc="Engineering geology information">
+          <Borehole DisplayName="Boreholes" Desc="Select a borehole for detail."
+                    RefDomainName="Geology" RefObjsName="Allboreholes" />
+          <Stratum DisplayName="Stratum" Desc="Select a strata for detail."
+                    RefDomainName="Geology" RefObjsName="AllStratum" />
+          <SoilProperty DisplayName="Soil Properties" Desc="Select a soil for detail."
+                        RefDomainName="Geology" RefObjsName="AllSoilProperties"/>
+        </EngineeringGeology>
+        <Hydrology DisplayName="Hydrology" Desc="Hydrology information">
+          <PhreaticWater DisplayName="PhreaticWater" Desc="Phreatic water information" HasObj="true" 
+                         RefDomainName="Geology" RefObjsName="AllPhreaticWaters"/>
+          <ConfinedWater DisplayName="ConfinedWater" Desc="Confined water information" HasObj="true"
+                         RefDomainName="Geology" RefObjsName="AllConfinedWaters"/>
+          <WaterProperty DisplayName="WaterProperties" Desc="Water properties" HasObj="true"
+                         RefDomainName="Geology" RefObjsName="AllWaterProperties"/>
+        </Hydrology>
+      </Geology>
+    </TreeDefinition>
+  </Domain>
+  
+  <Domain Name="Structure" Type="Structure">
+    <ObjsDefinition>
+      <Tunnel HasGeometry="true" Name="AllTunnels" GISLayerName="DES_TUN"
+                TableNameSQL="Tunnels"/>
+      <SegmentLining HasGeometry="true" Name="AllSegmentLinings" GISLayerName="DES_RIN"
+                TableNameSQL="SegmentLinings,SLConstructionRecords,TBMDrivingRecords,TBMPostureRecords,SLPostureRecords,SLSettlement,SLConvergence" OrderSQL="[ID]" />
+      <TunnelAxis HasGeometry="true" Name="AllTunnelAxes"
+                  GISLayerName="DES_AXL" TableNameSQL="TunnelAxes,TunnelAxesPoints"/>
+      <SLType Name="AllSLTypes" TableNameSQL="SLType,SLBaseType,Segments"/>
+    </ObjsDefinition>
+    <TreeDefinition>
+      <Structure DisplayName="Structure" Desc="Shanghai Metro Line No. 12 Structures">
+        <Tunnel DisplayName="Tunnel" Desc="Tunnels"
+                RefDomainName="Structure" RefObjsName="AllTunnels" >
+          <BoredTunnel DisplayName="UpGoing" Desc="Upgoing tunnel">
+            <SegmentLining DisplayName="Segmentlining" Desc="Select a segment lining for detail."
+                           RefDomainName="Structure" RefObjsName="AllSegmentLinings" Filter="[LineNo]=121800"/>
+          </BoredTunnel>
+          <BoredTunnel DisplayName="DownDoing" Desc="Downgoing tunnel">
+            <SegmentLining DisplayName="Segmentlining" Desc="Select a segment lining for detail."
+                           RefDomainName="Structure" RefObjsName="AllSegmentLinings" Filter="[LineNo]=121810"/>
+          </BoredTunnel>
+        </Tunnel>
+      </Structure>
+    </TreeDefinition>
+  </Domain>
+  <Domain Name="Tdisease" Type="Tdisease">
+    <ObjsDefinition>
+      <crack HasGeometry="true" Name="crack" 
+                TableNameSQL="SLCrack"/>
+      <leakage HasGeometry="true" Name="leakage"
+                TableNameSQL="Leakage"/>
+      <leakagegrp HasGeometry="true" Name="leakageGRP"
+                TableNameSQL="LeakageGRP"/>
+      <Spall HasGeometry="true" Name="SLSpall"
+                TableNameSQL="SLSpall"/>
+    </ObjsDefinition>
+    <TreeDefinition>
+      <Tdisease DisplayName="Tdisease" Desc="Shanghai Metro Line No. 12 Structures">
+        <crack DisplayName="SLCrack" Desc="Tunnels"
+                RefDomainName="Tdisease" RefObjsName="crack" >
+        </crack>
+        <leakagegrp DisplayName="SLLeakage" Desc="Tunnels"
+                RefDomainName="Tdisease" RefObjsName="leakage" >
+        </leakagegrp>
+        <leakage DisplayName="SLLeakageGRP" Desc="Tunnels"
+                RefDomainName="Tdisease" RefObjsName="leakageGRP" >
+        </leakage>
+        <Spall DisplayName="SLSpall" Desc="Tunnels"
+                RefDomainName="Tdisease" RefObjsName="SLSpall" >
+        </Spall>
+      </Tdisease>
+    </TreeDefinition>
+  </Domain>
+  <Domain Name="Monitoring" Type="Monitoring">
+    <ObjsDefinition>
+      <MonPoint HasGeometry="true" Name="AllDipMons" GISLayerName="MON_DIP"
+                TableNameSQL="Mon_SegmentSensor,Mon_SegmentSensorData" OrderSQL="[ID],[time]"  ConditionSQL="[Description]='双倾角支点',@Last(1000)"/>
+      <MonPoint HasGeometry="true" Name="AllJFMons" GISLayerName="MON_JF"
+                TableNameSQL="Mon_SegmentSensor,Mon_SegmentSensorData" OrderSQL="[ID],[time]" ConditionSQL="[Description]='接缝张开支点',@Last(1000)"/>
+      <MonPoint HasGeometry="true" Name="AllGWs" GISLayerName="MON_GW"
+               TableNameSQL="Mon_SegmentSensor,Mon_SegmentSensorData" OrderSQL="[ID],[time]" ConditionSQL="[Description]='商业网关',@Last(1000)"/>                   
+
+      <MonGroup HasGeometry="true" Name="MON_DipGroup"  GISLayerName="MON_DPGP"
+                TableNameSQL="Mon_SegmentSensorGroup"  OrderSQL="[ID],[time]" ConditionSQL="[Description]='双倾角支点',@Last(1000)"/>
+      
+      <MonGroup HasGeometry="true" Name="MON_settlementGroup" GISLayerName="MON_DPGP"
+                TableNameSQL="Mon_SegmentSensorGroup"  OrderSQL="[ID],[time]" ConditionSQL="[Description]='纵向微型倾角支点',@Last(1000)"/>
+      
+      <MonGroup HasGeometry="true" Name="MON_JFGroup"  GISLayerName="MON_JFGP"
+                TableNameSQL="Mon_SegmentSensorGroup"  OrderSQL="[ID],[time]" ConditionSQL="[Description]='接缝张开支点',@Last(1000)"/>
+
+      <MonPoint HasGeometry="true" Name="AllTongjiGWs" GISLayerName="MON_GW_TJ"
+               TableNameSQL="Mon_SegmentSensor,Mon_SegmentSensorData" OrderSQL="[ID],[time]" ConditionSQL="[Description]='同济大学网关',@Last(1000)" />
+      <MonPoint HasGeometry="true" Name="AllTongjiDipMons" GISLayerName="MON_DIP_TJ"
+                TableNameSQL="Mon_SegmentSensor,Mon_SegmentSensorData" OrderSQL="[ID],[time]"  ConditionSQL="[Description]='同济大学双倾角支点',@Last(1000)"/>
+      <MonPoint HasGeometry="true" Name="AllTongjiJFMons" GISLayerName="MON_JF_TJ"
+                TableNameSQL="Mon_SegmentSensor,Mon_SegmentSensorData" OrderSQL="[ID],[time]"  ConditionSQL="[Description]='同济大学接缝张开支点',@Last(1000)"/>
+      <MonPoint HasGeometry="true" Name="AllTongjiLeakMons" GISLayerName="MON_LEAK_TJ"
+                TableNameSQL="Mon_SegmentSensor,Mon_SegmentSensorData" OrderSQL="[ID],[time]"  ConditionSQL="[Description]='渗漏水支点',@Last(1000)"/>
+      <!--<MonPoint HasGeometry="true" Name="AllTongjiACEMons" GISLayerName="MON_ACE_TJ"
+                TableNameSQL="Mon_SegmentSensor,Mon_SegmentSensorData" OrderSQL="[ID],[time]"  ConditionSQL="[Description]='加速度传感器支点',@Last(1000)"/>-->
+      <MonPoint HasGeometry="true" Name="AllTongjiACEMons" GISLayerName="MON_ACE_TJ"
+          TableNameSQL="Mon_AccelerationTime,Mon_AccelerationData" OrderSQL="[ID]"  ConditionSQL="[Description]='加速度'"/>
+      <MonPoint HasGeometry="true" Name="AllTongjiLDIPMons" GISLayerName="MON_LDIP_TJ"
+               TableNameSQL="Mon_SegmentSensor,Mon_SegmentSensorData" OrderSQL="[ID],[time]"  ConditionSQL="[Description]='纵向倾角支点',[Time] >#2016-3-1#"/>
+
+      <MonGroup HasGeometry="true" Name="MON_DipGroup_TJ"  GISLayerName="MON_DPGP_TJ"
+                 TableNameSQL="Mon_SegmentSensorGroup"  OrderSQL="[ID],[time]" ConditionSQL="[Description]='同济自制双倾角支点',@Last(1000)"/>
+      <MonGroup HasGeometry="true" Name="MON_JFGroup_TJ"  GISLayerName="MON_JFGP_TJ"
+                TableNameSQL="Mon_SegmentSensorGroup"  OrderSQL="[ID],[time]" ConditionSQL="[Description]='同济自制接缝张开支点',@Last(1000)"/>
+      <MonGroup HasGeometry="true" Name="MON_ACEGroup"  GISLayerName="MON_ACGP_TJ"
+                TableNameSQL="Mon_SegmentSensorGroup"  OrderSQL="[ID],[time]" ConditionSQL="[Description]='同济大学振动传感器',@Last(1000)"/>
+      <MonGroup HasGeometry="true" Name="MON_LDIPGroup"  GISLayerName="MON_LDPGP"
+                TableNameSQL="Mon_SegmentSensorGroup"  OrderSQL="[ID],[time]" ConditionSQL="[Description]='纵向微型倾角支点',@Last(1000)"/>
+      
+      <MonPoint HasGeometry="false" Name="Ins_segment_settlement"   GISLayerName="DES_TUN"
+               TableNameSQL="Ins_Segment2,Ins_SegmentData" OrderSQL="[ID],[time]" ConditionSQL="[Description]='人工监测',[Time] >#2015-4-20#  AND [component]='settlement' "/>          
+      <MonPoint HasGeometry="false" Name="Ins_segment_convergence"  GISLayerName="DES_TUN"
+               TableNameSQL="Ins_Segment2,Ins_SegmentData" OrderSQL="[ID],[time]" ConditionSQL="[Description]='人工监测',[Time] >#2015-4-20#  AND [component]='convergence' "/>          
+      
+      <MonPoint HasGeometry="false" Name="AllWXRings_H" GISLayerName="DES_TUN"
+               TableNameSQL="Mon_Ring,Mon_RingConvergence" OrderSQL="[ID],[time]" ConditionSQL="[Description]='WX_H',@Last(1000) AND [SensorType]='WX' AND [component]='Horizontal' "/>
+      <MonPoint HasGeometry="false" Name="AllTJRings_H" GISLayerName="DES_TUN"
+               TableNameSQL="Mon_Ring,Mon_RingConvergence" OrderSQL="[ID],[time]" ConditionSQL="[Description]='TJ_H',@Last(1000) AND [SensorType]='TJ' AND [component]='Horizontal'"/>
+      <MonPoint HasGeometry="false" Name="AllWXRings_V" GISLayerName="DES_TUN"
+               TableNameSQL="Mon_Ring,Mon_RingConvergence" OrderSQL="[ID],[time]" ConditionSQL="[Description]='WX_V',@Last(1000) AND [SensorType]='WX' AND [component]='Vertical' "/>
+      <MonPoint HasGeometry="false" Name="AllTJRings_V" GISLayerName="DES_TUN"
+               TableNameSQL="Mon_Ring,Mon_RingConvergence" OrderSQL="[ID],[time]" ConditionSQL="[Description]='TJ_V',@Last(1000) AND [SensorType]='TJ' AND [component]='Vertical' "/>
+    </ObjsDefinition>
+    <TreeDefinition>
+      <Monitoring DisplayName="Monitoring" Desc="Monitorings">
+        <StructureMonitoring DisplayName="盾构隧道结构变形监测">
+          <MonitoringItem DisplayName="悟莘传感器">
+            <MonPoint DisplayName="管片倾角变化监测" Desc="管片倾角变化监测"
+                    RefDomainName="Monitoring" RefObjsName="AllDipMons" />
+            <MonPoint DisplayName="管片接缝张开量监测" Desc="管片接缝张开量监测"
+                   RefDomainName="Monitoring" RefObjsName="AllJFMons" />
+             
+            <MonitoringItem DisplayName="管片收敛监测">             
+            <MonPoint DisplayName="横向收敛" Desc="横向收敛"
+                   RefDomainName="Monitoring" RefObjsName="AllWXRings_H" />
+            <MonPoint DisplayName="竖向收敛" Desc="竖向收敛"
+                   RefDomainName="Monitoring" RefObjsName="AllWXRings_V" />
+            </MonitoringItem>
+                                  
+            <MonGroup DisplayName="倾角支点组"
+                       RefDomainName="Monitoring"  RefObjsName="MON_DipGroup" />
+            <MonGroup DisplayName="纵向倾角支点组"
+                       RefDomainName="Monitoring"  RefObjsName="MON_settlementGroup" />
+            <MonGroup DisplayName="接缝张开支点组"
+                       RefDomainName="Monitoring"  RefObjsName="MON_JFGroup" />                                         
+          </MonitoringItem>
+          <MonitoringItem DisplayName="人工监测数据">
+            <MonPoint DisplayName="横向收敛" Desc="横向收敛"
+                   RefDomainName="Monitoring" RefObjsName="Ins_segment_convergence" />
+            <MonPoint DisplayName="纵向沉降" Desc="纵向沉降"
+                   RefDomainName="Monitoring" RefObjsName="Ins_segment_settlement" />
+          </MonitoringItem>
+          <MonitoringItem DisplayName ="同济大学自制传感器">
+            <MonPoint DisplayName="管片倾角变化监测" Desc="管片倾角变化监测"
+                       RefDomainName="Monitoring" RefObjsName="AllTongjiDipMons" />
+            <MonPoint DisplayName="管片接缝张开量监测" Desc="管片接缝张开量监测"
+                      RefDomainName="Monitoring" RefObjsName="AllTongjiJFMons" />
+            <MonPoint DisplayName="管片渗漏水监测" Desc="管片渗漏水监测"
+                      RefDomainName="Monitoring" RefObjsName="AllTongjiLeakMons" />
+            <MonPoint DisplayName="管片纵向相对倾角变化监测" Desc="管片纵向相对倾角变化监测"
+                      RefDomainName="Monitoring" RefObjsName="AllTongjiLDIPMons" />
+            <MonPoint DisplayName="振动加速度监测" Desc="振动加速度监测"
+                       RefDomainName="Monitoring" RefObjsName="AllTongjiACEMons" />
+                       
+            <MonitoringItem DisplayName="管片收敛监测">             
+            <MonPoint DisplayName="横向收敛" Desc="横向收敛"
+                   RefDomainName="Monitoring" RefObjsName="AllTJRings_H"/>
+            <MonPoint DisplayName="竖向收敛" Desc="竖向收敛"
+                   RefDomainName="Monitoring" RefObjsName="AllTJRings_V" />
+            </MonitoringItem>
+          </MonitoringItem>
+        </StructureMonitoring>
+      </Monitoring>
+    </TreeDefinition>
+  </Domain>
+  <Domain Name="Analysis" Type="Unknown">
+
+  </Domain>
+</Project>
