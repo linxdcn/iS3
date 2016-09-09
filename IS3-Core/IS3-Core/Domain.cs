@@ -42,6 +42,7 @@ namespace IS3.Core
         Construction,
         Monitoring,
         Maintenance,
+        Tdisease,
     };
 
     // Summary:

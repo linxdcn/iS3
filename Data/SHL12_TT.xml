@@ -84,11 +84,14 @@
   <Domain Name="Monitoring" Type="Monitoring">
     <ObjsDefinition>
       <MonPoint HasGeometry="true" Name="AllDipMons" GISLayerName="MON_DIP"
-                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" />
+                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" 
+                ConditionSQL=",@Last(1000)"/>
       <MonPoint HasGeometry="true" Name="AllJFMons" GISLayerName="MON_JF"
-                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" />
+                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" 
+                ConditionSQL=",@Last(1000)"/>
       <MonPoint HasGeometry="true" Name="AllGWs" GISLayerName="MON_GW"
-               TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" />
+               TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" 
+                ConditionSQL=",@Last(1000)"/>
 
       <MonGroup HasGeometry="true" Name="MON_DipGroup"  GISLayerName="MON_DPGP"
                TableNameSQL="Mon_SegmentGroup"  OrderSQL="[ID],[time]"/>
@@ -96,19 +99,23 @@
                 TableNameSQL="Mon_SegmentGroup"  OrderSQL="[ID],[time]"/>
 
       <MonPoint HasGeometry="true" Name="AllTongjiGWs" GISLayerName="MON_GW_TJ"
-               TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" />
+               TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" 
+                ConditionSQL=",@Last(1000)"/>
       <MonPoint HasGeometry="true" Name="AllTongjiDipMons" GISLayerName="MON_DIP_TJ"
-                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" />
+                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" 
+                ConditionSQL=",@Last(1000)"/>
       <MonPoint HasGeometry="true" Name="AllTongjiJFMons" GISLayerName="MON_JF_TJ"
-                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" />
+                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" 
+                ConditionSQL=",@Last(1000)"/>
       <MonPoint HasGeometry="true" Name="AllTongjiLeakMons" GISLayerName="MON_LEAK_TJ"
-                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" />
+                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" 
+                ConditionSQL=",@Last(1000)"/>
       <MonPoint HasGeometry="true" Name="AllTongjiACEMons" GISLayerName="MON_ACE_TJ"
-                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" />
+                TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" 
+                ConditionSQL=",@Last(1000)"/>
       <MonPoint HasGeometry="true" Name="AllTongjiLDIPMons" GISLayerName="MON_LDIP_TJ"
-               TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" />
-
-
+               TableNameSQL="Mon_Segment,Mon_SegmentData" OrderSQL="[ID],[time]" 
+                ConditionSQL=",@Last(1000)"/>
 
       <MonGroup HasGeometry="true" Name="MON_DipGroup_TJ"  GISLayerName="MON_DPGP_TJ"
                  TableNameSQL="Mon_SegmentGroup"  OrderSQL="[ID],[time]"/>

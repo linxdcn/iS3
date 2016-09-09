@@ -296,17 +296,19 @@ plls,q1,q2,-1
 
 *dim,x,,360,1
 *dim,y,,360,1
+*dim,z,,360,1
 
 *do,i,1,num_element
 *if,NSEL(i),gt,0,then
 x(i,1)=UX(i)
 y(i,1)=UY(i)
+z(i,1)=UZ(i)
 *endif
 *enddo
 
 *cfopen,result,txt
-*vwrite,x(1),y(1),m(1),n(1),q(1)
-(2(f17.10,1x),3(f17.10,1x))
+*vwrite,x(1),y(1),z(1),m(1),n(1),q(1)
+(3(f17.10,1x),3(f17.10,1x))
 *CFCLOSE", loadStructure.radius, loadStructure.thickness, loadStructure.width, loadStructure.moe, loadStructure.pr, loadStructure.density / 1000, loadStructure.k_ground, loadStructure.k_joint,
          loadStructure.pv, loadStructure.ph1, loadStructure.ph2);
 

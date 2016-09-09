@@ -48,6 +48,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,6 +60,10 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WebService, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\WebService.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -71,6 +79,7 @@
     <Compile Include="DrawTools\DrawTunnelsWindow.xaml.cs">
       <DependentUpon>DrawTunnelsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helper\Analysis\CallAnsys.cs" />
     <Compile Include="Helper\Analysis\LoadStructure.cs" />
     <Compile Include="Helper\Analysis\RingInfo.cs" />
     <Compile Include="Helper\Analysis\TSIAnalysis.cs" />
@@ -95,6 +104,7 @@
     <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateModel.cs" />
     <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateNodes.cs" />
     <Compile Include="Helper\FEM\ShieldTunnelLine3D\GenerateParts.cs" />
+    <Compile Include="Helper\File\FileHelper.cs" />
     <Compile Include="Helper\File\PathHelper.cs" />
     <Compile Include="Helper\Format\FormatData.cs" />
     <Compile Include="Helper\Mapping\ShapeMappingUtility.cs" />
@@ -142,6 +152,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -186,7 +197,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

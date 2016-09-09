@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Xml;
 
+
 using IS3.Core;
 using IS3.Core.Geometry;
 using IS3.Core.Graphics;
@@ -105,7 +106,7 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
         void LoadStructureModelWindow_Loaded(object sender,
             RoutedEventArgs e)
         {
-            Application curApp = Application.Current;
+            System.Windows.Application curApp = System.Windows.Application.Current;
             Window mainWindow = curApp.MainWindow;
             this.Owner = mainWindow;
 
@@ -211,6 +212,10 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
         private void SLLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             IView view = InputViewCB.SelectedItem as IView;
+
+            if (SLLB.Items == null || SLLB.Items.Count == 0)
+                return;
+
             SegmentLining sl = SLLB.SelectedItem as SegmentLining;
             SLType slType = TunnelTools.getSLType(sl.SLTypeID);
             if (slType == null)
@@ -223,6 +228,10 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             Domain analysisDomain = HelperFunction.GetAnalysisDomain();
             DGObjectsCollection allLCSLoads = analysisDomain.getObjects("CSLoad");
             DGObjects loadDGObjects = HelperFunction.GetDGObjsByName(allLCSLoads, "AllLCSLoads");
+
+            if (loadDGObjects == null)
+                return;
+
             string name = sl.ToString() + view.eMap.MapID;
             if (loadDGObjects.containsKey(name))
             {
@@ -231,6 +240,9 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 horizontalLoad1 = sis.result.Qe1 + sis.result.Qw1;
                 horizontalLoad2 = sis.result.Qe2 + sis.result.Qw2;
             }
+
+            if (verticalLoad == 0 || horizontalLoad1 == 0 || horizontalLoad2 == 0)
+                return;
 
             tb_Radius.Text = r.ToString() + " m";
             tb_Thickness.Text = slType.Thickness.ToString() + " m";
@@ -244,6 +256,19 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             tb_HorizontalLoad1.Text = horizontalLoad1.ToString() + " KPa";
             tb_HorizontalLoad2.Text = horizontalLoad2.ToString() + " KPa";
         }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            //updata the line list box
+            if (BrowserBtn != null)
+            {
+                if (RB1.IsChecked.Value)
+                    BrowserBtn.IsEnabled = false;
+                else
+                    BrowserBtn.IsEnabled = true;
+            }      
+        }
+
         #endregion
 
         private void Path_Click(object sender, RoutedEventArgs e)
@@ -270,8 +295,16 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            StartAnalysis();
-            SyncToView();
+            string message = "It may take some time to conduct this analysis. Plase wait patient after submit the requirement. Do you want to continue?";
+            MessageBoxResult mbr = System.Windows.MessageBox.Show(message, "Warning", MessageBoxButton.OKCancel);
+            if (mbr == MessageBoxResult.OK)
+            {
+                start();
+            }
+            else if (mbr == MessageBoxResult.Cancel)
+            {
+
+            }
             Close();
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -279,8 +312,16 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             Close();
         }
 
-        private void StartAnalysis()
+        private async void start()
         {
+            await StartAnalysis();
+            SyncToView();
+        }
+        private async Task StartAnalysis()
+        {
+            if (tb_VerticalLoad.Text == "" || tb_HorizontalLoad1.Text == "" || tb_HorizontalLoad2.Text == "")
+                return;
+            
             _loadStructure.radius = FormatData.ToNumber(tb_Radius.Text);
             _loadStructure.thickness = FormatData.ToNumber(tb_Thickness.Text);
             _loadStructure.width = FormatData.ToNumber(tb_Width.Text);
@@ -294,48 +335,28 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             _loadStructure.ph2 = FormatData.ToNumber(tb_HorizontalLoad2.Text);
             _loadStructure.strResult = LoadStructure.createCode(_loadStructure);
 
-            string path = "D:/SLConvergenceAnalysis";
+            string path = Runtime.rootPath + "/bin/ansys/" + DateTime.Now.ToString("yyyyMMddHHmmss");
             System.IO.Directory.CreateDirectory(path);
+            string inputFilePath = path + "/input.txt";
+            FileStream fs1 = new FileStream( inputFilePath, FileMode.OpenOrCreate, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(fs1);
+            sw.WriteLine(_loadStructure.strResult);
+            sw.Close();
+            fs1.Close();
 
-            DirectoryInfo dir = new DirectoryInfo(path);
-            dir.Create();
-
-            DirectoryInfo dir2 = new DirectoryInfo(path);
-            dir2.CreateSubdirectory("Result");
-
-            if (!File.Exists("D:/SLConvergenceAnalysis/input.txt"))
+            if (RB1.IsChecked.Value)
             {
-                FileStream fs1 = new FileStream("D:/SLConvergenceAnalysis/input.txt", FileMode.Create, FileAccess.Write);
-                StreamWriter sw = new StreamWriter(fs1);
-                sw.WriteLine(_loadStructure.strResult);
-                sw.Close();
-                fs1.Close();
+                await CallAnsys.CalllRemoteAsync(inputFilePath, path);
             }
             else
             {
-                FileStream fs = new FileStream("D:/SLConvergenceAnalysis/input.txt", FileMode.Open, FileAccess.Write);
-                StreamWriter sr = new StreamWriter(fs);
-                sr.WriteLine(_loadStructure.strResult);//开始写入值
-                sr.Close();
-                fs.Close();
-            }
-
-            //start analysis
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            string inputfile, outputfile;
-            inputfile = "D:/SLConvergenceAnalysis/input.txt";
-            outputfile = "D:/SLConvergenceAnalysis/output.txt";
-            proc.StartInfo.FileName = TB_Path.Text;
-            proc.StartInfo.Arguments = "-b -p ansysds -i " + inputfile + " -o " + outputfile;
-            proc.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-            proc.StartInfo.WorkingDirectory = "D:/SLConvergenceAnalysis/Result";
-            proc.Start();
-            proc.WaitForExit();
+                await CallAnsys.CalllLocalAsync(TB_Path.Text, inputFilePath, path);
+            }           
 
             //read data
             List<LoadStructure.NodeResult> listNode = new List<LoadStructure.NodeResult>();
 
-            StreamReader reader = new System.IO.StreamReader("D:/SLConvergenceAnalysis/Result/result.txt");
+            StreamReader reader = new System.IO.StreamReader("D:/SLConvergenceAnalysis/result.txt");
             string ss;
             int i = 1;
             while ((ss = reader.ReadLine()) != null)
@@ -346,12 +367,13 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 node.n = i;
                 node.x = double.Parse(arr[0]);
                 node.y = double.Parse(arr[1]);
-                node.moment = double.Parse(arr[2]);
-                node.axial = double.Parse(arr[3]);
-                node.shear = double.Parse(arr[4]);
+                node.moment = double.Parse(arr[3]);
+                node.axial = double.Parse(arr[4]);
+                node.shear = double.Parse(arr[5]);
                 listNode.Add(node);
                 i++;
             }
+            reader.Close();
 
             _loadStructure.Result = listNode;
             Draw(_loadStructure);
