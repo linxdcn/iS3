@@ -77,8 +77,8 @@ namespace IS3.SimpleStructureTools
             items.Add(item);
             item = new ToolTreeItem("Structure|Load", "Load Structure Model", loadStructure);
             items.Add(item);
-            item = new ToolTreeItem("FEM|Load", "Test", test);
-            items.Add(item);
+            //item = new ToolTreeItem("FEM|Load", "Test", test);
+            //items.Add(item);
             item = new ToolTreeItem("Maintenance|TSI", "TSI", tsi);
             items.Add(item);
         }

@@ -50,6 +50,7 @@ namespace IS3.Core
         protected string _name;
         protected string _fullname;
         protected string _desc;
+        protected string _res;
 
         // raw data from database
         protected DataRow _rawData;
@@ -110,6 +111,12 @@ namespace IS3.Core
         {
             get { return _desc; }
             set { _desc = value; }
+        }
+        [DataMember]
+        public string result
+        {
+            get { return _res; }
+            set { _res = value; }
         }
 
         public DataRow rawData

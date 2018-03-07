@@ -15,7 +15,7 @@ def addBaseMap():
     emap = is3.EngineeringMap('BaseMap',
                               0, 0, 0, 0, 0.1)
     emap.LocalTileFileName1 = 'online'
-    emap.LocalTileFileName2 = 'GZ_MetroLine8.tpk'
+    emap.LocalTileFileName2 = 'GZ_MetroLine88.tpk'
     emap.LocalGeoDbFileName = 'plan_map2.geodatabase'
 
     viewWP = is3.MainframeWrapper.addView(emap)

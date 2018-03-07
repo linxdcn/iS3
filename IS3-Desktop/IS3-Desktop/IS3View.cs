@@ -338,9 +338,11 @@ namespace IS3.Desktop
                 _isHitTesting = true;
                 DGObject obj = null;
                 IS3GraphicsLayer gLayer = null;
-                foreach (Layer layer in _map.Layers)
+
+                int cnt = _map.Layers.Count;
+                for (int i = cnt - 1; i >= 0; i--)
                 {
-                    gLayer = layer as IS3GraphicsLayer;
+                    gLayer = _map.Layers[i] as IS3GraphicsLayer;
                     if (!isLayerSelectable(gLayer))
                         continue;
                     obj = await gLayer.hitTestAsync(screenPoint, mapView);
@@ -893,9 +895,10 @@ namespace IS3.Desktop
             bool success = false;
             DGObject obj = null;
             IS3GraphicsLayer gLayer = null;
-            foreach (Layer layer in _map.Layers)
-            {
-                gLayer = layer as IS3GraphicsLayer;
+            int cnt = _map.Layers.Count;
+                for (int i = cnt - 1; i >= 0; i--)
+                {
+                    gLayer = _map.Layers[i] as IS3GraphicsLayer;
                 if (!isLayerSelectable(gLayer))
                     continue;
                 obj = await gLayer.selectObjectByPoint(screenPoint, mapView);

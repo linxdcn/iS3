@@ -179,6 +179,8 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                     {
                         RingTSI result = results[i];
 
+                        result.sl.result = "FastTSI: " + result.tsi.ToString("0.00");
+
                         //symbol
                         Color color = Helper.ColorTools.GradeColor.GetTSIColor(result.tsi);
                         ISimpleLineSymbol linesymbol = Runtime.graphicEngine.newSimpleLineSymbol(
@@ -235,6 +237,11 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 IGraphicCollection gc = _slsGraphics[id];
                 gLayer.addGraphics(gc);
             }
+
+            //// sync objects with graphics
+            //List<DGObject> SLs = _allSLs.merge();
+            //gLayer.syncObjects(SLs);
+
 
             //计算新建图形范围，并在地图中显示该范围
             IEnvelope ext = null;
