@@ -25,6 +25,12 @@
                          Description="Shanghai Metro Line No.12"
                          Default="false">
       </p:ProjectLocation>
+      <p:ProjectLocation ID="GuangzhouMetroLine8"
+                         DefinitionFile="GuangzhouMetroLine8.xml"
+                         X="13524400" Y="3665000"
+                         Description="Guangzhou Metro Line No.8"
+                         Default="false">
+      </p:ProjectLocation>
       <p:ProjectLocation ID="NJ_MetroL10"
                          DefinitionFile="NJ_MetroL10.xml"
                          X="13212400" Y="3768950"
