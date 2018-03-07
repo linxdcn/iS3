@@ -619,6 +619,20 @@ def Load():
     tilefile = is3.Runtime.tilePath + "\\Empty.tpk"
     safe_view.addLocalTiledLayer(tilefile, 'baselayer')
 
+    print ("--- Add a empty longitudinal profile map ---")
+    emap = is3.EngineeringMap('profile2', 0, 0, 100, 100, 0.01)
+    emap.MapType = is3.EngineeringMapType.GeneralProfileMap;
+    safe_view = is3.MainframeWrapper.addView(emap)
+    tilefile = is3.Runtime.tilePath + "\\Empty.tpk"
+    safe_view.addLocalTiledLayer(tilefile, 'baselayer')
+
+    print ("--- Add a empty longitudinal profile map ---")
+    emap = is3.EngineeringMap('profile3', 0, 0, 100, 100, 0.01)
+    emap.MapType = is3.EngineeringMapType.GeneralProfileMap;
+    safe_view = is3.MainframeWrapper.addView(emap)
+    tilefile = is3.Runtime.tilePath + "\\Empty.tpk"
+    safe_view.addLocalTiledLayer(tilefile, 'baselayer')
+
     print ("--- Add 3D map ---")
     viewWP3 = add3dview()
 

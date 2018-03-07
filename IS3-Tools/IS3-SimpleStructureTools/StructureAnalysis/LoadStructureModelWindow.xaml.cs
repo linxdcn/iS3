@@ -356,7 +356,7 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
             //read data
             List<LoadStructure.NodeResult> listNode = new List<LoadStructure.NodeResult>();
 
-            StreamReader reader = new System.IO.StreamReader("D:/SLConvergenceAnalysis/result.txt");
+            StreamReader reader = new System.IO.StreamReader(path + "/result.txt");
             string ss;
             int i = 1;
             while ((ss = reader.ReadLine()) != null)

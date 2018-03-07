@@ -175,8 +175,10 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                     List<SegmentLining> sls = TunnelTools.getSLsByLineNo((int)tunnel.LineNo);
                     List<RingTSI> results = TSIAnalysis.getTSIResult(sls);
 
-                    foreach (RingTSI result in results)
+                    for (int i = 0; i < results.Count; i++)
                     {
+                        RingTSI result = results[i];
+
                         //symbol
                         Color color = Helper.ColorTools.GradeColor.GetTSIColor(result.tsi);
                         ISimpleLineSymbol linesymbol = Runtime.graphicEngine.newSimpleLineSymbol(
@@ -188,6 +190,23 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                         g.Symbol = symbol;
                         IGraphicCollection gc = Runtime.graphicEngine.newGraphicCollection();
                         gc.Add(g);
+
+                        // add text
+                        if (i % 100 == 0)
+                        {
+                            string strK = "TSI:" + result.tsi.ToString("#0.0");
+                            
+                            IPolygon polygon = g.Geometry as IPolygon;
+                            IPointCollection pointCollection = polygon.GetPoints();
+                            IMapPoint p1_temp = pointCollection[0];
+                            IMapPoint p3_temp = pointCollection[2];
+                            double x = (p1_temp.X + p3_temp.X) / 2.0;
+                            double y = (p1_temp.Y + p3_temp.Y) / 2.0;
+                            IMapPoint p = Runtime.geometryEngine.newMapPoint(x, y, _spatialRef);
+                            g = Runtime.graphicEngine.newText(strK, p, Colors.Red, "Arial", 10.0);
+                            gc.Add(g);
+                        }
+                        
                         _slsGraphics[result.sl.id] = gc;
                     }          
                 }
