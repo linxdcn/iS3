@@ -13,32 +13,16 @@ namespace IS3.SimpleStructureTools.Helper.ColorTools
         {
             Color color = new Color();
 
-            if (value > 4.8)
+            if (value <= 1.5)
                 color = Color.FromArgb(255,0,255,0);
-            else if (value > 4.6)
-                color = Color.FromArgb(255, 0, 255, 51);
-            else if (value > 4.4)
-                color = Color.FromArgb(255, 0, 255, 102);
-            else if (value > 4.2)
-                color = Color.FromArgb(255, 0, 255, 153);
-            else if (value > 4.0)
-                color = Color.FromArgb(255, 0, 255, 204);
-            else if (value > 3.8)
-                color = Color.FromArgb(255, 0, 255, 255);
-            else if (value > 3.6)
-                color = Color.FromArgb(255, 51, 255, 255);
-            else if (value > 3.4)
-                color = Color.FromArgb(255, 102, 255, 204);
-            else if (value > 3.2)
-                color = Color.FromArgb(255, 153, 255, 204);
-            else if (value > 3.0)
-                color = Colors.Blue;
-            else if (value > 2)
-                color = Colors.LightYellow;
-            else if (value > 1)
-                color = Colors.Orange;
+            else if (value <= 2.5)
+                color = Color.FromArgb(255, 0, 0, 255);
+            else if (value <= 3.5)
+                color = Color.FromArgb(255, 255, 255, 0);
+            else if (value <= 4.5)
+                color = Color.FromArgb(255, 255, 127, 0);
             else
-                color = Colors.Red;
+                color = Color.FromArgb(255, 255, 0, 0);
 
             return color;
         }

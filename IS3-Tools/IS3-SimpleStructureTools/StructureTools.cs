@@ -32,6 +32,7 @@ namespace IS3.SimpleStructureTools
         TunnelCSLoadWindow tunnelCSLoadWindow;
         LSDynaDemo lsDynaDemo;
         TSIWindow tsiWindow;
+        FAHPWindow fahpWindow;
         LoadStructureModelWindow loadStructureWindow;
         TestWindow testWindow;
         
@@ -43,6 +44,7 @@ namespace IS3.SimpleStructureTools
         public void lsDyna() { Init(lsDynaDemo); }
         public void test() { Init(testWindow); }
         public void tsi() { Init(tsiWindow); }
+        public void fahp() { Init(fahpWindow); }
         public void loadStructure() { Init(loadStructureWindow); }
         #endregion
 
@@ -80,6 +82,8 @@ namespace IS3.SimpleStructureTools
             //item = new ToolTreeItem("FEM|Load", "Test", test);
             //items.Add(item);
             item = new ToolTreeItem("Maintenance|TSI", "TSI", tsi);
+            items.Add(item);
+            item = new ToolTreeItem("Maintenance|TSI", "FAHP", fahp);
             items.Add(item);
         }
     }
