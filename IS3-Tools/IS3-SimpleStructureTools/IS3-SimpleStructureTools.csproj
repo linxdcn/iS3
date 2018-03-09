@@ -115,6 +115,9 @@
     <Compile Include="Helper\Mapping\ShieldTunnelMappingUtility.cs" />
     <Compile Include="Helper\ObjectTools\TunnelTools.cs" />
     <Compile Include="Helper\Analysis\SoilInitalStress.cs" />
+    <Compile Include="Http\HttpRequestWindow.xaml.cs">
+      <DependentUpon>HttpRequestWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LoadTools\TunnelCSLoadWindow.xaml.cs">
       <DependentUpon>TunnelCSLoadWindow.xaml</DependentUpon>
     </Compile>
@@ -172,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DrawTools\DrawTunnelsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Http\HttpRequestWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

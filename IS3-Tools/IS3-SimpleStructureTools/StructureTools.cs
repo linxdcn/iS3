@@ -9,6 +9,7 @@ using IS3.SimpleStructureTools.DrawTools;
 using IS3.SimpleStructureTools.SpatialTools;
 using IS3.SimpleStructureTools.LoadTools;
 using IS3.SimpleStructureTools.StructureAnalysis;
+using IS3.SimpleStructureTools.Http;
 
 namespace IS3.SimpleStructureTools
 {
@@ -35,6 +36,8 @@ namespace IS3.SimpleStructureTools
         FAHPWindow fahpWindow;
         LoadStructureModelWindow loadStructureWindow;
         TestWindow testWindow;
+
+        HttpRequestWindow httpRequestWindow;
         
         public void drawTunnelAxes() { Init(drawTunnelAxesWindow); }
         public void drawTunnels() { Init(drawTunnelsWindow); }
@@ -46,6 +49,7 @@ namespace IS3.SimpleStructureTools
         public void tsi() { Init(tsiWindow); }
         public void fahp() { Init(fahpWindow); }
         public void loadStructure() { Init(loadStructureWindow); }
+        public void httpRequest() { Init(httpRequestWindow); }
         #endregion
 
         public void Init<T>(T window) where T : System.Windows.Window, new()
@@ -84,6 +88,8 @@ namespace IS3.SimpleStructureTools
             item = new ToolTreeItem("Maintenance|TSI", "TSI", tsi);
             items.Add(item);
             item = new ToolTreeItem("Maintenance|TSI", "FAHP", fahp);
+            items.Add(item);
+            item = new ToolTreeItem("Web|Http", "Json", httpRequest);
             items.Add(item);
         }
     }
