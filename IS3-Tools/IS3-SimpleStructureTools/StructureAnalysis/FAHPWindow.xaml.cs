@@ -21,11 +21,11 @@ using IS3.SimpleStructureTools.Helper;
 using IS3.SimpleStructureTools.Helper.Analysis;
 
 namespace IS3.SimpleStructureTools.StructureAnalysis
-{       
+{
     /// <summary>
-    /// Interaction logic for TSIWindow.xaml
+    /// Interaction logic for FAHP.xaml
     /// </summary>
-    public partial class TSIWindow : Window
+    public partial class FAHPWindow : Window
     {
         Project _prj;
         Domain _structureDomain;
@@ -47,7 +47,7 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
         Dictionary<int, int> _slsGrade;
         Dictionary<int, IGraphicCollection> _slsGraphics;
         
-        public TSIWindow()
+        public FAHPWindow()
         {
             InitializeComponent();
 
@@ -165,7 +165,7 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                 IEnumerable<DGObject> tunnels = _selectedTunnelsDict[TunnelLayerID];
                 List<DGObject> tunnelList = tunnels.ToList();
                 IGraphicsLayer gLayer = _inputView.getLayer("DES_RIN");
-                
+
                 foreach (DGObject dg in tunnelList)
                 {
                     Tunnel tunnel = dg as Tunnel;
@@ -198,7 +198,7 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                         //if (i % 100 == 0)
                         //{
                         //    string strK = "TSI:" + result.tsi.ToString("#0.0");
-                            
+
                         //    IPolygon polygon = g.Geometry as IPolygon;
                         //    IPointCollection pointCollection = polygon.GetPoints();
                         //    IMapPoint p1_temp = pointCollection[0];
@@ -209,9 +209,9 @@ namespace IS3.SimpleStructureTools.StructureAnalysis
                         //    g = Runtime.graphicEngine.newText(strK, p, Colors.Red, "Arial", 10.0);
                         //    gc.Add(g);
                         //}
-                        
+
                         _slsGraphics[result.sl.id] = gc;
-                    }          
+                    }
                 }
             }
         }

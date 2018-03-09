@@ -18,6 +18,19 @@
                     <TextBlock Text="{Binding id, StringFormat='ID={0}, '}" />
                     <TextBlock Text="{Binding name, StringFormat='Name={0}'}"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding result}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <Trigger Property="Text" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
             </StackPanel>
         </Border>
     </Grid>

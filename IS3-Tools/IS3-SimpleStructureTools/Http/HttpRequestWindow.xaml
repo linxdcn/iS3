@@ -1,0 +1,45 @@
+﻿<Window x:Class="IS3.SimpleStructureTools.Http.HttpRequestWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        Title="Http Request Window" Height="420" Width="400"
+        Topmost="True"
+        ResizeMode="NoResize">
+    <Grid x:Name="LayoutRoot" Background="White">
+
+        <ScrollViewer Width="380" Height="330"
+                      VerticalAlignment="Top">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="360"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="SettingsHolder"
+                    Orientation="Vertical" Margin="5,5,5,0">
+                    <TextBlock Text="URL:" Margin="0,5,5,0"/>
+                    <TextBox x:Name="URLTB" Margin="0,5,5,0"/>
+                    <TextBlock Text="Request Body:" Margin="0,5,5,0"/>
+                    <TextBox x:Name="RequestTB" Margin="0,5,5,0" Height="150" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Auto" TextWrapping="NoWrap"/>
+                    <TextBlock Text="Response Body:"  Margin="0,5,5,0"/>
+                    <TextBox x:Name="ResponseTB" Margin="0,5,5,0" Height="150" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Auto" TextWrapping="NoWrap" IsReadOnly="True"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,10,10">
+            <Button Content="Sent"
+                    Click="Sent_Click"
+                    Width="100"/>
+            <Button Content="Cancel"
+                    Click="Cancel_Click"
+                    Width="100"
+                    Margin="20,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

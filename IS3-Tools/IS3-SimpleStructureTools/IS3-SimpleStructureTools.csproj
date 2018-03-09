@@ -115,6 +115,9 @@
     <Compile Include="Helper\Mapping\ShieldTunnelMappingUtility.cs" />
     <Compile Include="Helper\ObjectTools\TunnelTools.cs" />
     <Compile Include="Helper\Analysis\SoilInitalStress.cs" />
+    <Compile Include="Http\HttpRequestWindow.xaml.cs">
+      <DependentUpon>HttpRequestWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LoadTools\TunnelCSLoadWindow.xaml.cs">
       <DependentUpon>TunnelCSLoadWindow.xaml</DependentUpon>
     </Compile>
@@ -133,6 +136,9 @@
     </Compile>
     <Compile Include="SpatialTools\TunnelDepthAnalysisWindow.xaml.cs">
       <DependentUpon>TunnelDepthAnalysisWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StructureAnalysis\FAHPWindow.xaml.cs">
+      <DependentUpon>FAHPWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="StructureAnalysis\LoadStructureModelWindow.xaml.cs">
       <DependentUpon>LoadStructureModelWindow.xaml</DependentUpon>
@@ -172,11 +178,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Http\HttpRequestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LoadTools\TunnelCSLoadWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SpatialTools\TunnelDepthAnalysisWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StructureAnalysis\FAHPWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

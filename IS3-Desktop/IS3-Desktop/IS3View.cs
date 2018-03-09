@@ -64,6 +64,7 @@ namespace IS3.Desktop
         protected MapView _mapView;     // The ArcGIS MapView
         protected Map _map;             // The ArcGIS Map
         protected MapTip _mapTip;       // Map tip
+        protected Envelope _extent;
         protected LocalFeatureService _localFeatureService;
         // To do: add to user defined vars
         protected int _maxRecords = 5000;
@@ -245,8 +246,14 @@ namespace IS3.Desktop
             bool useLocalTileFile1 = isValidFileName(_eMap.LocalTileFileName1);
             bool useLocalTileFile2 = isValidFileName(_eMap.LocalTileFileName2);
 
+            // Load online layer
+            if (useLocalTileFile1 && _eMap.LocalTileFileName1.Equals("online"))
+            {
+                addOnlineTiledLayer("OnlineMap");
+            }
+
             // Load local tile layers
-            if (useLocalTileFile1)
+            if (useLocalTileFile1 && !_eMap.LocalTileFileName1.Equals("online"))
             {
                 string filePath = prj.projDef.LocalTilePath + "\\"
                     + _eMap.LocalTileFileName1;
@@ -331,9 +338,11 @@ namespace IS3.Desktop
                 _isHitTesting = true;
                 DGObject obj = null;
                 IS3GraphicsLayer gLayer = null;
-                foreach (Layer layer in _map.Layers)
+
+                int cnt = _map.Layers.Count;
+                for (int i = cnt - 1; i >= 0; i--)
                 {
-                    gLayer = layer as IS3GraphicsLayer;
+                    gLayer = _map.Layers[i] as IS3GraphicsLayer;
                     if (!isLayerSelectable(gLayer))
                         continue;
                     obj = await gLayer.hitTestAsync(screenPoint, mapView);
@@ -373,6 +382,16 @@ namespace IS3.Desktop
         public Point locationToScreen(IMapPoint mapPoint)
         {
             return _mapView.LocationToScreen(mapPoint as MapPoint);
+        }
+
+        public void addOnlineTiledLayer(string id)
+        {
+            OpenStreetMapLayer onlineTileLayer = new OpenStreetMapLayer();
+            onlineTileLayer.ID = id;
+            onlineTileLayer.DisplayName = id;
+            onlineTileLayer.IsVisible = true;
+
+            _map.Layers.Add(onlineTileLayer);
         }
 
         public void addLocalTiledLayer(string filePath, string id)
@@ -453,7 +472,21 @@ namespace IS3.Desktop
             gLayer.MinScale = table.ServiceInfo.MinScale;
             gLayer.MaxScale = table.ServiceInfo.MaxScale;
             setGraphicLayerDisplayOptions(layerDef, gLayer);
-            
+
+            // zoom to the layer
+            foreach (Graphic g in gLayer.graphics)
+            {
+                if (_extent == null)
+                {
+                    _extent = g.Geometry.Extent;
+                }
+                else
+                {
+                    _extent = _extent.Union(g.Geometry.Extent);
+                }
+            }
+            _mapView.SetView(_extent);
+
             _map.Layers.Add(gLayer);
             return gLayer;
         }
@@ -862,9 +895,10 @@ namespace IS3.Desktop
             bool success = false;
             DGObject obj = null;
             IS3GraphicsLayer gLayer = null;
-            foreach (Layer layer in _map.Layers)
-            {
-                gLayer = layer as IS3GraphicsLayer;
+            int cnt = _map.Layers.Count;
+                for (int i = cnt - 1; i >= 0; i--)
+                {
+                    gLayer = _map.Layers[i] as IS3GraphicsLayer;
                 if (!isLayerSelectable(gLayer))
                     continue;
                 obj = await gLayer.selectObjectByPoint(screenPoint, mapView);

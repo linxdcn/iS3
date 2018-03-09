@@ -132,7 +132,7 @@ namespace IS3.SimpleStructureTools.Helper.Analysis
                 {
                     RingTSI ringTSI = new RingTSI();
                     ringTSI.sl = orderSLList[i - 1];
-                    ringTSI.tsi = info.tsi;
+                    ringTSI.tsi = 6 - info.tsi;
                     ringTSI.s_ave = info.s_ave;
                     ringTSI.s_diff = info.s_diff;
                     ringTSI.c_ave = info.c_ave;

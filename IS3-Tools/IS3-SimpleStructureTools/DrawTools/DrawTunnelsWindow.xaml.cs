@@ -222,7 +222,7 @@ namespace IS3.SimpleStructureTools.DrawTools
         private void TunnelLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //make the listBox not selectable
-            ListView lv = sender as ListView;
+            ListBox lv = sender as ListBox;
             lv.SelectedIndex = -1;
         }
 
